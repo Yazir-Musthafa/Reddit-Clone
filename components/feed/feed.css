@@ -1,0 +1,650 @@
+/* Feed Container & Sort Controls */
+.feed-container, .popular-feed-view, .news-feed-view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 0;
+}
+
+.feed-sort-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.sort-dropdown-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-feed-sort {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 16px;
+    background: transparent;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-feed-sort:hover {
+    background-color: var(--card-background);
+    color: var(--text-primary);
+}
+
+.btn-view-mode {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.btn-view-mode:hover {
+    background-color: var(--card-background);
+    color: var(--text-primary);
+}
+
+.btn-view-mode .view-icon-svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    flex-shrink: 0;
+    display: block;
+}
+
+.btn-view-mode .chevron-down {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
+    flex-shrink: 0;
+    display: block;
+    margin-left: 2px;
+    color: var(--text-secondary);
+}
+
+/* Subreddit Avatar Variations */
+.avatar-green-circle { background-color: #059669; }
+.avatar-orange-circle { background-color: #FF4500; }
+.avatar-pink-circle { background-color: #EC4899; }
+.avatar-politics { background-color: #DC2626; }
+.avatar-entertainment { background-color: #FF007A; }
+.avatar-worldnews { background-color: #2563EB; }
+.avatar-tech { background-color: #0D9488; }
+.avatar-gadgets { background-color: #8B5CF6; }
+.avatar-movies { background-color: #EF4444; }
+
+.post-meta-tag {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.post-verified-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #0079D3;
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 800;
+    margin-left: 2px;
+}
+
+/* Video & Media Overlay Styles */
+.dark-video-overlay {
+    position: relative;
+    width: 100%;
+    background-color: #050505;
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+}
+
+.video-preview-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 360px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.insta-comment-card {
+    background-color: rgba(20, 20, 20, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #FFFFFF;
+    font-size: 13px;
+    backdrop-filter: blur(4px);
+}
+
+.comment-author {
+    font-weight: 700;
+    font-size: 12px;
+    color: #F3F4F6;
+    margin-bottom: 2px;
+}
+
+.comment-author span {
+    font-weight: 400;
+    color: #9CA3AF;
+    margin-left: 4px;
+}
+
+.comment-sticker {
+    font-size: 16px;
+    margin: 4px 0;
+}
+
+.comment-sub {
+    font-size: 11px;
+    color: #9CA3AF;
+    margin-top: 4px;
+}
+
+.comment-body {
+    font-size: 13px;
+    color: #FFFFFF;
+    margin-top: 2px;
+}
+
+.btn-mute-sound {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.65);
+    color: #FFFFFF;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Spider-Man Meme Hero Card */
+.spiderman-meme-hero {
+    background: linear-gradient(135deg, #18181B 0%, #27272A 100%);
+    border-radius: 12px;
+    padding: 32px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+}
+
+.meme-stage-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 480px;
+}
+
+.spidey-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.spidey-label {
+    background-color: #FFFFFF;
+    color: #000000;
+    font-size: 18px;
+    font-weight: 800;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 1.2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-family: Impact, sans-serif;
+}
+
+.graphics-badge {
+    background-color: #000000;
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 800;
+    padding: 14px 22px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 1.2;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    font-family: Impact, sans-serif;
+}
+
+/* News Article Card Layout (Thumbnail on Far Right) */
+.news-posts-wide-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.news-card-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.news-content-flex {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 8px 0 14px 0;
+}
+
+.news-text-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.news-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--text-primary);
+}
+
+.news-url-link {
+    font-size: 12.5px;
+    color: #0079D3;
+    text-decoration: none;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-url-link:hover {
+    text-decoration: underline;
+}
+
+.news-thumbnail-wrapper {
+    flex-shrink: 0;
+}
+
+.news-thumb-image {
+    width: 130px;
+    height: 86px;
+    border-radius: 10px;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 6px 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.thumb-media-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #FFFFFF;
+    background-color: rgba(0, 0, 0, 0.65);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.thumb-alexjones {
+    background: linear-gradient(135deg, #1E293B 0%, #475569 100%);
+}
+
+.thumb-nolan {
+    background: linear-gradient(135deg, #0F172A 0%, #334155 100%);
+}
+
+.thumb-wildfire {
+    background: linear-gradient(135deg, #991B1B 0%, #EA580C 100%);
+}
+
+.thumb-flock {
+    background: linear-gradient(135deg, #065F46 0%, #059669 100%);
+}
+
+.thumb-schumer {
+    background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+}
+
+.thumb-drone {
+    background: linear-gradient(135deg, #065F46 0%, #10B981 100%);
+}
+
+.thumb-pixel {
+    background: linear-gradient(135deg, #475569 0%, #94A3B8 100%);
+}
+
+.thumb-movies {
+    background: linear-gradient(135deg, #831843 0%, #F43F5E 100%);
+}
+
+.external-icon-badge {
+    background-color: rgba(0, 0, 0, 0.65);
+    color: #FFFFFF;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+/* ==========================================================================
+   Sort & View Dropdown Controls & Compact View Mode (Exact match to Screenshots)
+   ========================================================================== */
+
+.sort-left-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.btn-feed-sort {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 16px;
+    background: transparent;
+    border: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-feed-sort:hover {
+    background-color: #f6f7f8;
+    color: #0f1a1c;
+}
+
+.btn-view-mode {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.btn-view-mode:hover {
+    background-color: #f6f7f8;
+    color: #0f1a1c;
+}
+
+.btn-view-mode .view-icon-svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    flex-shrink: 0;
+    display: block;
+}
+
+.btn-view-mode .chevron-down {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
+    flex-shrink: 0;
+    display: block;
+    margin-left: 2px;
+    color: var(--text-secondary);
+}
+
+/* Dropdown Popup Card */
+.sort-popup-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 140px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.08);
+    padding: 6px 0;
+    z-index: 1150;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    animation: dropdownFadeIn 0.12s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sort-popup-menu.hidden {
+    display: none !important;
+}
+
+.dropdown-section-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #576f76;
+    padding: 6px 14px 4px 14px;
+}
+
+.sort-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #0f1a1c;
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+    box-sizing: border-box;
+}
+
+.sort-menu-item:hover {
+    background-color: #f6f7f8;
+}
+
+.sort-menu-item.active {
+    font-weight: 700;
+    background-color: #eaeded;
+}
+
+.sort-menu-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f1a1c;
+}
+
+/* ==========================================================================
+   Compact View Post Cards (Matching Screenshot 3)
+   ========================================================================== */
+.posts-feed.compact-view-active {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.compact-post-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 14px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #edeff1;
+    gap: 14px;
+    transition: border-color 0.15s ease;
+}
+
+.compact-post-card:hover {
+    border-color: #c8cbcf;
+}
+
+.compact-thumb {
+    position: relative;
+    width: 96px;
+    height: 62px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #1a1a1b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compact-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.compact-badge {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    line-height: 1.2;
+}
+
+.compact-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2px;
+    min-width: 0;
+}
+
+.compact-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #576f76;
+}
+
+.compact-community-avatar {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 800;
+    color: white;
+}
+
+.compact-community-name {
+    font-weight: 700;
+    color: #0f1a1c;
+    text-decoration: none;
+}
+
+.compact-btn-join {
+    background-color: #0f1a1c;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.compact-btn-join:hover {
+    opacity: 0.85;
+}
+
+.compact-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f1a1c;
+    line-height: 1.35;
+    margin: 1px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.compact-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+}
+
+.compact-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #f6f7f8;
+    border: none;
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #576f76;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.compact-pill:hover {
+    background-color: #e5e8ea;
+    color: #0f1a1c;
+}
+

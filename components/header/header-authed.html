@@ -1,0 +1,236 @@
+<header class="header">
+    <div class="header-left">
+        <button class="btn-drawer-toggle header-hamburger-btn" id="headerDrawerToggleBtn" title="Toggle navigation" aria-label="Toggle navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <a href="index.html" class="header-logo-link" aria-label="Reddit Home">
+            <div class="reddit-logo">
+                <svg class="snoo-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                    <circle cx="10" cy="10" r="10" fill="#FF4500"/>
+                    <path fill="#FFF" d="M16.67 10a1.46 1.46 0 00-2.47-1.05 7.12 7.12 0 00-3.85-1.23l.8-2.54 2.18.52a1 1 0 101.07-1.42 1 1 0 00-.97.74l-2.44-.58a.28.28 0 00-.34.19l-.92 2.92a7.17 7.17 0 00-3.87 1.23 1.46 1.46 0 00-1.46 2.47 3.32 3.32 0 000 3.73 1.46 1.46 0 001.46 2.47 7.42 7.42 0 004.18 1.34 7.42 7.42 0 004.18-1.34 1.46 1.46 0 001.46-2.47 3.32 3.32 0 000-3.73 1.46 1.46 0 00-.18-.28zM7.05 11.23a1.05 1.05 0 111.05-1.05 1.05 1.05 0 01-1.05 1.05zm5.9 3.55a3.67 3.67 0 01-2.95 1.03 3.67 3.67 0 01-2.95-1.03.28.28 0 010-.4.28.28 0 01.4 0 3.12 3.12 0 002.55.88 3.12 3.12 0 002.55-.88.28.28 0 01.4 0 .28.28 0 010 .4zm-.1-2.5a1.05 1.05 0 111.05-1.05 1.05 1.05 0 01-1.05 1.05z"/>
+                </svg>
+                <span class="reddit-wordmark">reddit</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="header-center" id="search-slot">
+        <!-- Search component rendered here -->
+    </div>
+
+    <div class="header-right header-right-authed">
+        <!-- AD Icon Badge -->
+        <button class="header-icon-btn" id="headerAdBtn" title="Advertise on Reddit">
+            <span class="ad-badge-icon">AD</span>
+        </button>
+
+        <!-- Chat Icon -->
+        <button class="header-icon-btn" id="headerChatBtn" title="Chat">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+        </button>
+
+        <!-- Create Post Button -->
+        <a href="submit.html" class="btn-create-post" id="headerCreateBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Create</span>
+        </a>
+
+        <!-- Notification Bell Icon -->
+        <button class="header-icon-btn" id="headerBellBtn" title="Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 01-3.46 0"/>
+            </svg>
+        </button>
+
+        <!-- User Profile Avatar Button & Dropdown Menu -->
+        <div class="user-profile-wrapper">
+            <button class="btn-user-avatar" id="userProfileBtn" aria-label="User profile" aria-expanded="false" aria-haspopup="true">
+                <div class="avatar-circle">
+                    <svg class="profile-snoo-icon" viewBox="0 0 20 20" fill="currentColor">
+                        <circle cx="10" cy="10" r="10" fill="#FF87A2"/>
+                        <path fill="#FFF" d="M16.67 10a1.46 1.46 0 00-2.47-1.05 7.12 7.12 0 00-3.85-1.23l.8-2.54 2.18.52a1 1 0 101.07-1.42 1 1 0 00-.97.74l-2.44-.58a.28.28 0 00-.34.19l-.92 2.92a7.17 7.17 0 00-3.87 1.23 1.46 1.46 0 00-1.46 2.47 3.32 3.32 0 000 3.73 1.46 1.46 0 001.46 2.47 7.42 7.42 0 004.18 1.34 7.42 7.42 0 004.18-1.34 1.46 1.46 0 001.46-2.47 3.32 3.32 0 000-3.73 1.46 1.46 0 00-.18-.28zM7.05 11.23a1.05 1.05 0 111.05-1.05 1.05 1.05 0 01-1.05 1.05zm5.9 3.55a3.67 3.67 0 01-2.95 1.03 3.67 3.67 0 01-2.95-1.03.28.28 0 010-.4.28.28 0 01.4 0 3.12 3.12 0 002.55.88 3.12 3.12 0 002.55-.88.28.28 0 01.4 0 .28.28 0 010 .4zm-.1-2.5a1.05 1.05 0 111.05-1.05 1.05 1.05 0 01-1.05 1.05z"/>
+                    </svg>
+                </div>
+                <span class="online-indicator"></span>
+            </button>
+
+            <!-- Profile Dropdown Menu Popup -->
+            <div class="profile-dropdown-menu hidden" id="profileDropdown" role="menu">
+                <!-- User Profile Header -->
+                <a href="#" class="profile-menu-item profile-user-header" role="menuitem">
+                    <div class="profile-header-avatar">
+                        <svg class="profile-snoo-icon-lg" viewBox="0 0 20 20" fill="currentColor">
+                            <circle cx="10" cy="10" r="10" fill="#FF87A2"/>
+                            <path fill="#FFF" d="M16.67 10a1.46 1.46 0 00-2.47-1.05 7.12 7.12 0 00-3.85-1.23l.8-2.54 2.18.52a1 1 0 101.07-1.42 1 1 0 00-.97.74l-2.44-.58a.28.28 0 00-.34.19l-.92 2.92a7.17 7.17 0 00-3.87 1.23 1.46 1.46 0 00-1.46 2.47 3.32 3.32 0 000 3.73 1.46 1.46 0 001.46 2.47 7.42 7.42 0 004.18 1.34 7.42 7.42 0 004.18-1.34 1.46 1.46 0 001.46-2.47 3.32 3.32 0 000-3.73 1.46 1.46 0 00-.18-.28zM7.05 11.23a1.05 1.05 0 111.05-1.05 1.05 1.05 0 01-1.05 1.05zm5.9 3.55a3.67 3.67 0 01-2.95 1.03 3.67 3.67 0 01-2.95-1.03.28.28 0 010-.4.28.28 0 01.4 0 3.12 3.12 0 002.55.88 3.12 3.12 0 002.55-.88.28.28 0 01.4 0 .28.28 0 010 .4zm-.1-2.5a1.05 1.05 0 111.05-1.05 1.05 1.05 0 01-1.05 1.05z"/>
+                        </svg>
+                    </div>
+                    <div class="profile-header-info">
+                        <span class="profile-title">View Profile</span>
+                        <span class="profile-username" id="dropdownUsername">u/Fantastic-Series2270</span>
+                    </div>
+                </a>
+
+                <!-- Edit Avatar -->
+                <a href="#" class="profile-menu-item" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.38 3.46L16 2a4 4 0 00-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10a2 2 0 002 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+                        </svg>
+                    </span>
+                    <span class="menu-label">Edit Avatar</span>
+                </a>
+
+                <!-- Drafts -->
+                <a href="#" class="profile-menu-item" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                    </span>
+                    <span class="menu-label">Drafts</span>
+                </a>
+
+                <!-- Achievements -->
+                <a href="#" class="profile-menu-item" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9H4.5a2.5 2.5 0 010-5H6"/>
+                            <path d="M18 9h1.5a2.5 2.5 0 000-5H18"/>
+                            <path d="M4 22h16"/>
+                            <path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"/>
+                            <path d="M18 4H6v7a6 6 0 0012 0V4z"/>
+                        </svg>
+                    </span>
+                    <span class="menu-label">Achievements</span>
+                    <span class="menu-extra-text">6 unlocked</span>
+                </a>
+
+                <!-- Earn -->
+                <a href="#" class="profile-menu-item profile-item-stacked" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v12M15 9.5a2.5 2.5 0 00-5 0c0 2.5 5 1.5 5 4a2.5 2.5 0 01-5 0"/>
+                        </svg>
+                    </span>
+                    <div class="menu-label-container">
+                        <span class="menu-label">Earn</span>
+                        <span class="menu-subtext">Earn cash on Reddit</span>
+                    </div>
+                </a>
+
+                <!-- Premium -->
+                <a href="#" class="profile-menu-item" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </span>
+                    <span class="menu-label">Premium</span>
+                </a>
+
+                <!-- Mod Mode -->
+                <div class="profile-menu-item profile-item-toggle" role="menuitem">
+                    <div class="profile-item-left">
+                        <span class="menu-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <path d="M12 8v4"/>
+                                <circle cx="12" cy="16" r="0.5"/>
+                            </svg>
+                        </span>
+                        <span class="menu-label">Mod Mode</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="modModeToggle" checked>
+                        <span class="toggle-slider">
+                            <svg class="toggle-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Display Mode -->
+                <a href="#" class="profile-menu-item" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                    </span>
+                    <span class="menu-label">Display Mode</span>
+                </a>
+
+                <!-- Log Out -->
+                <button class="profile-menu-item profile-btn-action" id="profileLogoutBtn" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                    </span>
+                    <span class="menu-label">Log Out</span>
+                </button>
+
+                <div class="profile-menu-divider"></div>
+
+                <!-- Advertise on Reddit -->
+                <a href="#" class="profile-menu-item" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z"/>
+                        </svg>
+                    </span>
+                    <span class="menu-label">Advertise on Reddit</span>
+                </a>
+
+                <!-- Try Reddit Pro -->
+                <a href="#" class="profile-menu-item" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </span>
+                    <span class="menu-label">Try Reddit Pro</span>
+                    <span class="menu-beta-badge">BETA</span>
+                </a>
+
+                <div class="profile-menu-divider"></div>
+
+                <!-- Settings -->
+                <a href="#" class="profile-menu-item" role="menuitem">
+                    <span class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                        </svg>
+                    </span>
+                    <span class="menu-label">Settings</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>

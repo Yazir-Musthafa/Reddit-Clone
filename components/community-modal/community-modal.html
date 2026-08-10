@@ -1,0 +1,252 @@
+<div class="community-modal-backdrop hidden" id="communityModalBackdrop">
+    <!-- Confetti Canvas Overlay (Triggered on Step 5 Celebration) -->
+    <canvas id="confettiCanvas" class="confetti-overlay hidden"></canvas>
+
+    <div class="community-modal-card" id="communityModalCard">
+        <!-- Step 1: Topic Selection Modal -->
+        <div class="modal-step-content active" id="modalStep1">
+            <header class="modal-header">
+                <div>
+                    <h2 class="modal-title">What will your community be about?</h2>
+                    <p class="modal-subtitle">Choose a topic to help redditors discover your community</p>
+                </div>
+                <button class="btn-modal-close" id="btnCloseCommunityModal" aria-label="Close">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </header>
+
+            <div class="topics-grid-container" id="topicsGrid">
+                <button class="topic-pill" data-topic="Anime & Cosplay"><span>🎏</span> Anime & Cosplay</button>
+                <button class="topic-pill" data-topic="Art"><span>🎓</span> Art</button>
+                <button class="topic-pill" data-topic="Business & Finance"><span>💵</span> Business & Finance</button>
+                <button class="topic-pill" data-topic="Collectibles & Other Hobbies"><span>☘️</span> Collectibles & Other Hobbies</button>
+                <button class="topic-pill" data-topic="Education & Career"><span>🛡️</span> Education & Career</button>
+                <button class="topic-pill" data-topic="Fashion & Beauty"><span>🧴</span> Fashion & Beauty</button>
+                <button class="topic-pill" data-topic="Food & Drinks"><span>🍔</span> Food & Drinks</button>
+                <button class="topic-pill" data-topic="Games"><span>🕹️</span> Games</button>
+                <button class="topic-pill" data-topic="Health"><span>❤️</span> Health</button>
+                <button class="topic-pill" data-topic="Home & Garden"><span>🏡</span> Home & Garden</button>
+                <button class="topic-pill" data-topic="Humanities & Law"><span>📜</span> Humanities & Law</button>
+                <button class="topic-pill" data-topic="Identity & Relationships"><span>🌈</span> Identity & Relationships</button>
+                <button class="topic-pill" data-topic="Internet Culture"><span>🏫</span> Internet Culture</button>
+                <button class="topic-pill" data-topic="Movies & TV"><span>🎬</span> Movies & TV</button>
+                <button class="topic-pill" data-topic="Music"><span>🎶</span> Music</button>
+                <button class="topic-pill" data-topic="Nature & Outdoors"><span>🌿</span> Nature & Outdoors</button>
+                <button class="topic-pill" data-topic="News & Politics"><span>📰</span> News & Politics</button>
+                <button class="topic-pill" data-topic="Places & Travel"><span>🌐</span> Places & Travel</button>
+                <button class="topic-pill" data-topic="Pop Culture"><span>✨</span> Pop Culture</button>
+                <button class="topic-pill" data-topic="Q&As & Stories"><span>✏️</span> Q&As & Stories</button>
+                <button class="topic-pill" data-topic="Reading & Writing"><span>📖</span> Reading & Writing</button>
+                <button class="topic-pill" data-topic="Sciences"><span>🧪</span> Sciences</button>
+                <button class="topic-pill" data-topic="Spooky"><span>👻</span> Spooky</button>
+                <button class="topic-pill" data-topic="Sports"><span>🏅</span> Sports</button>
+                <button class="topic-pill" data-topic="Technology"><span>⚡</span> Technology</button>
+                <button class="topic-pill" data-topic="Vehicles"><span>🚜</span> Vehicles</button>
+                <button class="topic-pill" data-topic="Wellness"><span>🧘</span> Wellness</button>
+                <button class="topic-pill" data-topic="Adult Content"><span>🔴</span> Adult Content</button>
+                <button class="topic-pill" data-topic="Mature Topics"><span>🔴</span> Mature Topics</button>
+            </div>
+
+            <footer class="modal-footer">
+                <div class="step-dots-indicator">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <div class="footer-btn-group">
+                    <button class="btn-modal-cancel" id="btnCancelStep1">Cancel</button>
+                    <button class="btn-modal-next" id="btnNextStep1">Next</button>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Step 2: Community Type Modal (Screenshot 2) -->
+        <div class="modal-step-content" id="modalStep2">
+            <header class="modal-header">
+                <div>
+                    <h2 class="modal-title">What kind of community is this?</h2>
+                    <p class="modal-subtitle">Decide who can view and contribute in your community. Only public communities show up in search. <strong>Important</strong>: Once set, you will need to submit a request to change your community type.</p>
+                </div>
+                <button class="btn-modal-close btnCloseModal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </header>
+
+            <div class="community-type-options">
+                <label class="type-option-card active">
+                    <div class="type-option-icon">🌐</div>
+                    <div class="type-option-info">
+                        <strong>Public</strong>
+                        <p>Anyone can view, post, and comment to this community</p>
+                    </div>
+                    <input type="radio" name="commType" value="Public" checked class="type-radio">
+                    <span class="radio-custom"></span>
+                </label>
+
+                <label class="type-option-card">
+                    <div class="type-option-icon">👁️</div>
+                    <div class="type-option-info">
+                        <strong>Restricted</strong>
+                        <p>Anyone can view, but only approved users can contribute</p>
+                    </div>
+                    <input type="radio" name="commType" value="Restricted" class="type-radio">
+                    <span class="radio-custom"></span>
+                </label>
+
+                <label class="type-option-card">
+                    <div class="type-option-icon">🔒</div>
+                    <div class="type-option-info">
+                        <strong>Private</strong>
+                        <p>Only approved users can view and contribute</p>
+                    </div>
+                    <input type="radio" name="commType" value="Private" class="type-radio">
+                    <span class="radio-custom"></span>
+                </label>
+
+                <div class="drawer-divider" style="margin: 16px 0;"></div>
+
+                <div class="mature-toggle-row">
+                    <div class="mature-info">
+                        <strong>Mature (18+)</strong>
+                        <p>Users must be over 18 to view and contribute</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="matureToggleInput">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+
+                <p class="modal-legal-note">
+                    By continuing, you agree to our <a href="#">Mod Code of Conduct</a> and acknowledge that you understand the <a href="#">Reddit Rules</a>.
+                </p>
+            </div>
+
+            <footer class="modal-footer">
+                <div class="step-dots-indicator">
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <div class="footer-btn-group">
+                    <button class="btn-modal-cancel" id="btnBackStep2">Back</button>
+                    <button class="btn-modal-next active" id="btnNextStep2">Next</button>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Step 3 & 4: Name & Description Modal (Screenshot 3 & 4) -->
+        <div class="modal-step-content" id="modalStep3">
+            <header class="modal-header">
+                <div>
+                    <h2 class="modal-title">Tell us about your community</h2>
+                    <p class="modal-subtitle">A name and description help people understand what your community is all about.</p>
+                </div>
+                <button class="btn-modal-close btnCloseModal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </header>
+
+            <div class="name-desc-flex-container">
+                <div class="inputs-column">
+                    <div class="input-field-group">
+                        <label class="input-label">Community name <span class="req-star">*</span></label>
+                        <div class="text-input-wrapper">
+                            <span class="input-prefix">r/</span>
+                            <input type="text" id="commNameInput" maxlength="21" placeholder="communityname" autocomplete="off">
+                        </div>
+                        <span class="char-count" id="commNameCharCount">0/21</span>
+                    </div>
+
+                    <div class="input-field-group">
+                        <label class="input-label">Description <span class="req-star">*</span></label>
+                        <textarea id="commDescInput" rows="4" placeholder="Tell us what your community is about..."></textarea>
+                        <span class="char-count" id="commDescCharCount">0</span>
+                    </div>
+                </div>
+
+                <!-- Live Card Preview Column -->
+                <div class="preview-column">
+                    <div class="live-community-card-preview">
+                        <div class="preview-card-header">
+                            <div class="preview-avatar avatar-orange-snoo">
+                                <span>r/</span>
+                            </div>
+                            <div class="preview-header-info">
+                                <h4 class="preview-comm-name" id="previewCommName">r/communityname</h4>
+                                <span class="preview-stats">1 weekly visitor • 1 weekly contributor</span>
+                            </div>
+                        </div>
+                        <p class="preview-desc-text" id="previewDescText">Your community description</p>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="modal-footer">
+                <div class="step-dots-indicator">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                </div>
+                <div class="footer-btn-group">
+                    <button class="btn-modal-cancel" id="btnBackStep3">Back</button>
+                    <button class="btn-modal-next btn-create-comm" id="btnCreateCommunitySubmit">Create Community</button>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Step 5: Celebration Confetti Modal (Screenshot 5) -->
+        <div class="modal-step-content" id="modalStep5">
+            <header class="modal-header">
+                <div></div>
+                <button class="btn-modal-close btnCloseModal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </header>
+
+            <div class="celebration-flex-container">
+                <div class="celebration-left-info">
+                    <h2 class="celebration-main-title">You launched a new community!</h2>
+                    <p class="celebration-sub-info">Here's what you should know</p>
+                    <p class="celebration-desc-p">We've applied some settings to help you get started. You can view and edit them anytime in your mod tools.</p>
+                    
+                    <div class="checklist-pills-row">
+                        <div class="check-pill">✔ Rules</div>
+                        <div class="check-pill">✔ Welcome guide</div>
+                    </div>
+                </div>
+
+                <div class="celebration-right-card">
+                    <div class="celebrated-comm-card" id="celebrationCardBg">
+                        <button class="edit-icon-circle circle-top-right">✏️</button>
+                        
+                        <div class="card-inner-box">
+                            <div class="celebrated-avatar-circle">
+                                <span>r/</span>
+                                <button class="edit-icon-tiny">✏️</button>
+                            </div>
+                            <h3 class="celebrated-title" id="celebratedCommName">r/animeeeesiee</h3>
+                            <span class="celebrated-stats">1 weekly visitor • 1 weekly contributor</span>
+                            <p class="celebrated-desc" id="celebratedCommDesc">hey guys</p>
+
+                            <button class="btn-base-color">
+                                <span>✏️ Base Color</span>
+                                <span class="color-dot-pink"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="modal-footer">
+                <div></div>
+                <div class="footer-btn-group">
+                    <button class="btn-modal-cancel" id="btnGoToCommunity">Go To Community Page</button>
+                    <button class="btn-modal-next active" id="btnViewNextSteps">View Next Steps</button>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>

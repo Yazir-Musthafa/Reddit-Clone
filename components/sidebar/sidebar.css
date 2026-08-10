@@ -1,0 +1,418 @@
+.sidebar-card {
+    background-color: var(--card-background);
+    border-radius: var(--radius-large);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: var(--col-sidebar-left);
+    height: calc(100vh - var(--header-height) - 36px);
+}
+
+.sidebar-content {
+    padding: 20px 16px 12px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+}
+
+.auth-buttons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.auth-btn {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    min-width: 0;
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    display: flex;
+    align-items: center;
+
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    padding: 0 12px;
+    gap: 10px;
+
+    overflow: hidden;
+}
+
+.auth-btn:hover {
+    background-color: var(--card-background);
+    border-color: var(--text-secondary);
+}
+
+.auth-btn-icon {
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 20px;
+}
+
+.auth-btn-text {
+    flex: 1;
+    min-width: 0;
+
+    text-align: center;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    margin: 0;
+}
+
+.sidebar-legal {
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 0 2px;
+}
+
+.legal-link {
+    color: var(--text-link);
+    text-decoration: none;
+}
+
+.legal-link:hover {
+    text-decoration: underline;
+}
+
+/* Illustration Wrapper with Top Gradient Fade & Mask */
+.sidebar-illustration-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: auto;
+    line-height: 0;
+    overflow: hidden;
+}
+
+.sidebar-illustration-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: linear-gradient(to bottom, #F6F7F8 0%, rgba(246, 247, 248, 0) 100%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.sidebar-illustration-img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    object-position: center bottom;
+    display: block;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 15%, black 45%);
+    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 15%, black 45%);
+}
+
+/* Authenticated Left Navigation Drawer Styles */
+.sidebar-authed-drawer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--col-sidebar-left);
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.nav-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.drawer-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-medium);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+}
+
+.drawer-nav-item:hover {
+    background-color: var(--card-background);
+}
+
+.drawer-nav-item.active {
+    background-color: #EEF1F3;
+    font-weight: 700;
+}
+
+.drawer-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--text-primary);
+    flex-shrink: 0;
+}
+
+.drawer-divider {
+    height: 1px;
+    background-color: var(--border-subtle);
+    margin: 12px 0;
+}
+
+.drawer-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    cursor: pointer;
+}
+
+.chevron-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.game-poker-card {
+    background-color: #052E16;
+    color: white;
+    border-radius: var(--radius-medium);
+    padding: 12px;
+    margin: 4px 0 8px 0;
+    position: relative;
+    cursor: pointer;
+}
+
+.poker-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #FF4500;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.poker-content strong {
+    font-size: 13px;
+    display: block;
+}
+
+.poker-content p {
+    font-size: 11px;
+    color: #86EFAC;
+    margin-top: 2px;
+}
+
+.game-avatar {
+    font-size: 18px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-card {
+    background-color: var(--card-background);
+    border-radius: var(--radius-large);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: var(--col-sidebar-left);
+    height: 100%;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+/* Authenticated Left Navigation Drawer Styles */
+.sidebar-authed-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: visible;
+    border-right: 1px solid var(--border-subtle);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-authed-drawer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--col-sidebar-left);
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+}
+
+.border-toggle-btn {
+    position: absolute;
+    top: 4px;
+    right: -16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.border-toggle-btn:hover {
+    background-color: #F6F7F8;
+    border-color: #828F9A;
+    transform: scale(1.05);
+}
+
+.fixed-collapsed-toggle {
+    position: fixed;
+    top: 72px;
+    left: 16px;
+    z-index: 9999;
+    background-color: #FFFFFF;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.fixed-collapsed-toggle.hidden {
+    display: none !important;
+}
+
+/* Sidebar Container Sliding Animation & Partial Collapsed Strip */
+#sidebar-container {
+    position: relative;
+    height: 100%;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#sidebar-container.collapsed {
+    width: 48px;
+    overflow: visible;
+}
+
+#sidebar-container.collapsed .sidebar-authed-drawer {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.main-layout {
+    transition: grid-template-columns 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-layout.sidebar-collapsed {
+    grid-template-columns: 48px minmax(0, 680px) var(--col-sidebar-right);
+}
+
+/* Beta tag for Reddit Pro */
+.beta-tag {
+    font-size: 10px;
+    font-weight: 800;
+    color: #FF4500;
+    background-color: rgba(255, 69, 0, 0.12);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: auto;
+}
+
+/* Left Sidebar Bottom Footer & Legal Section */
+.sidebar-footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 16px 24px 16px;
+}
+
+.footer-link-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 4px 0;
+    transition: color 0.15s ease;
+}
+
+.footer-link-item:hover {
+    color: var(--text-primary);
+}
+
+.footer-legal-compact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.footer-legal-compact a {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.footer-legal-compact a:hover {
+    text-decoration: underline;
+}
+
+.copyright-text {
+    font-size: 11px;
+    color: #9CA3AF;
+    width: 100%;
+    margin-top: 4px;
+}

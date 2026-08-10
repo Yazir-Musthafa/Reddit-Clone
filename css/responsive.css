@@ -1,0 +1,42 @@
+/* Responsive Breakpoints Specification */
+
+/* Desktop Large (Default: 3 Columns) */
+@media (min-width: 1200px) {
+    .main-layout {
+        grid-template-columns: var(--col-sidebar-left) minmax(500px, 1fr) var(--col-sidebar-right);
+    }
+}
+
+/* Tablet (768px - 1199px): Hide Right Communities Panel, 2 Columns */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .main-layout {
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: var(--space-xl);
+        padding: var(--space-lg);
+    }
+
+    .right-column-container {
+        display: none !important;
+    }
+}
+
+/* Mobile (< 768px): Hide Left Sidebar & Right Sidebar, 1 Column Feed Only */
+@media (max-width: 767px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        padding: var(--space-md) var(--space-sm);
+        gap: 0;
+    }
+
+    #sidebar-container {
+        display: none !important;
+    }
+
+    .right-column-container {
+        display: none !important;
+    }
+
+    #header-container {
+        height: 56px;
+    }
+}

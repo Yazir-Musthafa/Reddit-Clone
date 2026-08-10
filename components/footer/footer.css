@@ -1,0 +1,32 @@
+.footer-links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #68737D;
+    line-height: 1.45;
+    padding: 0 4px;
+}
+
+.footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 8px;
+    row-gap: 3px;
+}
+
+.footer-link {
+    color: #68737D;
+    text-decoration: none;
+    transition: text-decoration 0.15s ease;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+}
+
+.footer-copyright {
+    margin-top: 6px;
+    color: #828F9A;
+    font-size: 11.5px;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit to Reddit</title>
+    <meta name="description" content="Create and publish new posts on Reddit.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23FF4500%22/></svg>">
+    
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href="./css/variables.css">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/layout.css">
+    
+    <!-- Component Stylesheets -->
+    <link rel="stylesheet" href="./components/header/header.css">
+    <link rel="stylesheet" href="./components/search/search.css">
+    <link rel="stylesheet" href="./components/sidebar/sidebar.css">
+    <link rel="stylesheet" href="./components/post-create/post-create.css">
+    <link rel="stylesheet" href="./components/profile-dropdown/profile-dropdown.css">
+    <link rel="stylesheet" href="./components/chats/chats.css">
+    <link rel="stylesheet" href="./components/footer/footer.css">
+    <link rel="stylesheet" href="./css/responsive.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header Component Slot -->
+        <div id="header-container"></div>
+
+        <!-- Main Layout -->
+        <main class="main-layout">
+            <!-- Left Navigation Drawer Slot -->
+            <div id="sidebar-container"></div>
+
+            <!-- Central Create Post Canvas Slot -->
+            <div id="feed-container"></div>
+
+            <!-- Right Sidebar Area -->
+            <div class="right-column-container" style="justify-content: flex-end;">
+                <div id="footer-container"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Chats Pop-up Container Slot -->
+    <div id="chats-slot"></div>
+
+    <!-- Application Script Entry Point -->
+    <script type="module" src="./js/submit-app.js"></script>
+</body>
+</html>

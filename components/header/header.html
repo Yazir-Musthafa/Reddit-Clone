@@ -1,0 +1,47 @@
+<header class="header">
+    <div class="header-left">
+        <a href="#" class="header-logo-link" aria-label="Reddit Home">
+            <div class="reddit-logo">
+                <svg class="snoo-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                    <circle cx="10" cy="10" r="10" fill="#FF4500"/>
+                    <!-- Snoo face details in SVG -->
+                    <path fill="#FFF" d="M16.67 10a1.46 1.46 0 00-2.47-1.05 7.12 7.12 0 00-3.85-1.23l.8-2.54 2.18.52a1 1 0 101.07-1.42 1 1 0 00-.97.74l-2.44-.58a.28.28 0 00-.34.19l-.92 2.92a7.17 7.17 0 00-3.87 1.23 1.46 1.46 0 00-1.46 2.47 3.32 3.32 0 000 3.73 1.46 1.46 0 001.46 2.47 7.42 7.42 0 004.18 1.34 7.42 7.42 0 004.18-1.34 1.46 1.46 0 001.46-2.47 3.32 3.32 0 000-3.73 1.46 1.46 0 00-.18-.28zM7.05 11.23a1.05 1.05 0 111.05-1.05 1.05 1.05 0 01-1.05 1.05zm5.9 3.55a3.67 3.67 0 01-2.95 1.03 3.67 3.67 0 01-2.95-1.03.28.28 0 010-.4.28.28 0 01.4 0 3.12 3.12 0 002.55.88 3.12 3.12 0 002.55-.88.28.28 0 01.4 0 .28.28 0 010 .4zm-.1-2.5a1.05 1.05 0 111.05-1.05 1.05 1.05 0 01-1.05 1.05z"/>
+                </svg>
+                <span class="reddit-wordmark">reddit</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="header-center" id="search-slot">
+        <!-- Search component rendered here -->
+    </div>
+
+    <div class="header-right">
+        <button class="btn-signup" id="headerSignupBtn">Sign Up</button>
+        <button class="btn-login" id="headerLoginBtn">Log In</button>
+        <div class="more-menu-wrapper">
+            <button class="btn-more" id="headerMoreBtn" aria-label="More options">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <circle cx="4" cy="10" r="2"/>
+                    <circle cx="10" cy="10" r="2"/>
+                    <circle cx="16" cy="10" r="2"/>
+                </svg>
+            </button>
+            <div class="more-dropdown hidden" id="moreDropdown">
+                <a href="#" class="dropdown-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    Help Center
+                </a>
+                <a href="#" class="dropdown-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                    Terms & Policies
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    Log In / Sign Up
+                </a>
+            </div>
+        </div>
+    </div>
+</header>

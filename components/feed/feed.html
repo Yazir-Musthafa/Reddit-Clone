@@ -1,0 +1,39 @@
+<div class="feed-container">
+    <!-- Feed Filter Header Row (Landing Page View Controls) -->
+    <div class="feed-sort-row">
+        <div class="sort-left-controls">
+            <!-- View Dropdown Button & Menu -->
+            <div class="sort-dropdown-wrapper">
+                <button class="btn-view-mode" id="feedViewDropdownBtn" aria-label="Change layout view" aria-expanded="false" aria-haspopup="true">
+                    <svg class="view-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2.5"/>
+                        <line x1="3" y1="9" x2="21" y2="9"/>
+                    </svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="chevron-down"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+
+                <!-- View Options Menu -->
+                <div class="sort-popup-menu hidden" id="feedViewDropdownMenu">
+                    <div class="dropdown-section-header">View</div>
+                    <button class="sort-menu-item active" data-view="card">
+                        <span class="sort-menu-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                        </span>
+                        <span class="sort-menu-text">Card</span>
+                    </button>
+                    <button class="sort-menu-item" data-view="compact">
+                        <span class="sort-menu-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                        </span>
+                        <span class="sort-menu-text">Compact</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts Feed Slot -->
+    <div id="posts-list-slot">
+        <!-- Post components dynamically rendered -->
+    </div>
+</div>
