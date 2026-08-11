@@ -4,6 +4,10 @@ import { authState } from './auth-state.js';
  * Global interactions, modal managers, and multi-step Sign Up wizard.
  */
 
+// Validation Regex Patterns
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
 // State for multi-step signup
 const signUpState = {
     step: 1,
@@ -109,12 +113,12 @@ function renderLogInModal() {
             </div>
 
             <div class="reddit-input-group">
-                <input type="text" id="modalInputUser" class="reddit-input-field" placeholder=" " autocomplete="username">
+                <input type="text" id="modalInputUser" class="reddit-input-field" placeholder=" " autocomplete="username" pattern="^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$">
                 <label for="modalInputUser" class="reddit-input-label">Email or username <span class="required-asterisk">*</span></label>
             </div>
 
             <div class="reddit-input-group">
-                <input type="password" id="modalInputPass" class="reddit-input-field" placeholder=" " autocomplete="current-password">
+                <input type="password" id="modalInputPass" class="reddit-input-field" placeholder=" " autocomplete="current-password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$">
                 <label for="modalInputPass" class="reddit-input-label">Password <span class="required-asterisk">*</span></label>
                 <button type="button" class="password-toggle-btn" id="togglePasswordBtn" aria-label="Toggle password visibility">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -152,9 +156,11 @@ function bindLogInEvents(modal) {
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
     const validateInputs = () => {
-        const hasUser = userInput.value.trim().length > 0;
-        const hasPass = passInput.value.length > 0;
-        if (hasUser && hasPass) {
+        const userVal = userInput.value.trim();
+        const passVal = passInput.value;
+        const isEmailValid = EMAIL_REGEX.test(userVal) || (userVal.length > 0 && !userVal.includes('@'));
+        const isPassValid = PASSWORD_REGEX.test(passVal);
+        if (userVal.length > 0 && isPassValid && (userVal.includes('@') ? EMAIL_REGEX.test(userVal) : true)) {
             submitBtn.classList.add('enabled');
         } else {
             submitBtn.classList.remove('enabled');
@@ -274,19 +280,21 @@ function renderSignUpStep1(modal) {
             </div>
 
             <div class="reddit-input-group">
-                <input type="email" id="signUpEmail" class="reddit-input-field" placeholder=" " value="${signUpState.email}">
+                <input type="email" id="signUpEmail" class="reddit-input-field" placeholder=" " value="${signUpState.email}" pattern="^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$">
                 <label for="signUpEmail" class="reddit-input-label">Email <span class="required-asterisk">*</span></label>
             </div>
+            <p class="input-error-msg" id="signUpEmailError" style="display: none; margin-top: -6px; margin-bottom: 8px;">Please enter a valid email address</p>
 
             <div class="reddit-modal-links">
                 <p class="signup-prompt">Already a redditor? <a href="#" class="signup-link" id="modalLogInLink">Log In</a></p>
             </div>
 
-            <button class="reddit-login-submit-btn ${signUpState.email ? 'enabled' : ''}" id="step1ContinueBtn">Continue</button>
+            <button class="reddit-login-submit-btn ${EMAIL_REGEX.test(signUpState.email) ? 'enabled' : ''}" id="step1ContinueBtn">Continue</button>
         </div>
     `;
 
     const emailInput = modal.querySelector('#signUpEmail');
+    const emailError = modal.querySelector('#signUpEmailError');
     const continueBtn = modal.querySelector('#step1ContinueBtn');
     const closeBtn = modal.querySelector('#modalCloseBtn');
     const logInLink = modal.querySelector('#modalLogInLink');
@@ -297,10 +305,15 @@ function renderSignUpStep1(modal) {
 
     emailInput?.addEventListener('input', () => {
         signUpState.email = emailInput.value.trim();
-        if (signUpState.email.includes('@')) {
+        const isValid = EMAIL_REGEX.test(signUpState.email);
+        if (isValid) {
             continueBtn.classList.add('enabled');
+            if (emailError) emailError.style.display = 'none';
         } else {
             continueBtn.classList.remove('enabled');
+            if (emailError) {
+                emailError.style.display = signUpState.email.length > 0 ? 'block' : 'none';
+            }
         }
     });
 
@@ -371,6 +384,7 @@ function renderSignUpStep2(modal) {
 
 // STEP 3: Create Username and Password
 function renderSignUpStep3(modal) {
+    const isInitialPassValid = PASSWORD_REGEX.test(signUpState.password);
     modal.innerHTML = `
         <div class="reddit-modal-card">
             <button class="reddit-modal-back" id="modalBackBtn" aria-label="Go back">
@@ -401,10 +415,10 @@ function renderSignUpStep3(modal) {
             <p class="input-success-msg">Great name! It's not taken so it's all yours</p>
 
             <div class="reddit-input-group" style="margin-top: 16px;">
-                <input type="password" id="signUpPassword" class="reddit-input-field" placeholder=" " value="${signUpState.password}">
+                <input type="password" id="signUpPassword" class="reddit-input-field" placeholder=" " value="${signUpState.password}" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$">
                 <label for="signUpPassword" class="reddit-input-label">Password <span class="required-asterisk">*</span></label>
                 <div class="input-status-icons">
-                    <span class="icon-valid-check" id="passCheckIcon" style="display: ${signUpState.password ? 'inline' : 'none'};">✓</span>
+                    <span class="${isInitialPassValid ? 'icon-valid-check' : 'icon-invalid-cross'}" id="passCheckIcon" style="display: ${signUpState.password ? 'inline' : 'none'};">${isInitialPassValid ? '✓' : '✕'}</span>
                     <button type="button" class="password-toggle-btn" id="toggleSignUpPass">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -413,8 +427,9 @@ function renderSignUpStep3(modal) {
                     </button>
                 </div>
             </div>
+            <p class="input-error-msg" id="signUpPassError" style="display: none; margin-top: 4px;">Must contain 8+ chars, uppercase, lowercase, number & special char (@$!%*?&)</p>
 
-            <button class="reddit-login-submit-btn ${signUpState.username && signUpState.password ? 'enabled' : ''}" id="step3ContinueBtn" style="margin-top: 32px;">Continue</button>
+            <button class="reddit-login-submit-btn ${signUpState.username && isInitialPassValid ? 'enabled' : ''}" id="step3ContinueBtn" style="margin-top: 32px;">Continue</button>
         </div>
     `;
 
@@ -424,6 +439,7 @@ function renderSignUpStep3(modal) {
     const refreshBtn = modal.querySelector('#refreshUsernameBtn');
     const togglePass = modal.querySelector('#toggleSignUpPass');
     const passCheck = modal.querySelector('#passCheckIcon');
+    const passError = modal.querySelector('#signUpPassError');
     const continueBtn = modal.querySelector('#step3ContinueBtn');
 
     backBtn?.addEventListener('click', () => openSignUpStep(2));
@@ -433,6 +449,7 @@ function renderSignUpStep3(modal) {
         const randName = randomUsernames[Math.floor(Math.random() * randomUsernames.length)];
         userInput.value = randName;
         signUpState.username = randName;
+        checkStep3();
     });
 
     togglePass?.addEventListener('click', () => {
@@ -443,10 +460,25 @@ function renderSignUpStep3(modal) {
     const checkStep3 = () => {
         signUpState.username = userInput.value.trim();
         signUpState.password = passInput.value;
-        if (signUpState.password.length > 0) passCheck.style.display = 'inline';
-        else passCheck.style.display = 'none';
+        const isPassValid = PASSWORD_REGEX.test(signUpState.password);
 
-        if (signUpState.username && signUpState.password.length >= 6) {
+        if (signUpState.password.length > 0) {
+            passCheck.style.display = 'inline';
+            if (isPassValid) {
+                passCheck.textContent = '✓';
+                passCheck.className = 'icon-valid-check';
+                if (passError) passError.style.display = 'none';
+            } else {
+                passCheck.textContent = '✕';
+                passCheck.className = 'icon-invalid-cross';
+                if (passError) passError.style.display = 'block';
+            }
+        } else {
+            passCheck.style.display = 'none';
+            if (passError) passError.style.display = 'none';
+        }
+
+        if (signUpState.username && isPassValid) {
             continueBtn.classList.add('enabled');
         } else {
             continueBtn.classList.remove('enabled');
