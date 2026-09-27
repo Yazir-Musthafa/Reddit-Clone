@@ -1,0 +1,254 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 var(--space-xl);
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+    gap: var(--space-lg);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 6px;
+}
+
+.header-hamburger-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    margin-right: 4px;
+}
+
+.header-hamburger-btn:hover {
+    background-color: var(--card-background);
+}
+
+.header-logo-link {
+    display: flex;
+    align-items: center;
+}
+
+.reddit-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.snoo-icon {
+    width: 32px;
+    height: 32px;
+}
+
+.reddit-wordmark {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--reddit-orange);
+    letter-spacing: -0.5px;
+    line-height: 1;
+}
+
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 540px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.btn-signup {
+    background-color: var(--btn-signup-bg);
+    color: var(--btn-signup-text);
+    height: 36px;
+    padding: 0 16px;
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+    font-size: 13px;
+    transition: background-color 0.15s ease;
+}
+
+.btn-signup:hover {
+    background-color: var(--hover-btn-light);
+}
+
+.btn-login {
+    background-color: var(--btn-login-bg);
+    color: var(--btn-login-text);
+    height: 36px;
+    padding: 0 16px;
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+    font-size: 13px;
+    transition: background-color 0.15s ease;
+}
+
+.btn-login:hover {
+    background-color: var(--reddit-orange-hover);
+}
+
+.more-menu-wrapper {
+    position: relative;
+}
+
+.btn-more {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: background-color 0.15s ease;
+}
+
+.btn-more:hover {
+    background-color: var(--card-background);
+}
+
+.more-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    width: 220px;
+    background: var(--background);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--shadow-modal);
+    padding: var(--space-xs) 0;
+    z-index: 1100;
+}
+
+.more-dropdown.hidden {
+    display: none;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    font-size: 13px;
+    color: var(--text-primary);
+    transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--card-background);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: var(--border-subtle);
+    margin: var(--space-xs) 0;
+}
+
+/* Authenticated Header Buttons */
+.header-right-authed {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ad-badge-icon {
+    border: 1.5px solid var(--text-primary);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 1px 4px;
+    line-height: 1;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+}
+
+.header-icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.header-icon-btn:hover {
+    background-color: var(--card-background);
+}
+
+.btn-create-post {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: var(--radius-pill);
+    background-color: #F6F7F8;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+    border: 1px solid var(--border-subtle);
+}
+
+.btn-create-post:hover {
+    background-color: #E5E8EA;
+}
+
+.btn-user-avatar {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #F472B6, #FB7185);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.online-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 9px;
+    height: 9px;
+    background-color: #22C55E;
+    border: 2px solid white;
+    border-radius: 50%;
+}

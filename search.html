@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - Reddit</title>
+    <meta name="description" content="Search posts, communities, comments and people on Reddit.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23FF4500%22/></svg>">
+    <!-- Apply the saved display mode before first paint -->
+    <script>try { if (localStorage.getItem('rc_display') === 'dark') document.documentElement.classList.add('dark-mode'); } catch (e) {}</script>
+
+    <link rel="stylesheet" href="./css/variables.css">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/layout.css">
+    <link rel="stylesheet" href="./components/header/header.css">
+    <link rel="stylesheet" href="./components/profile-dropdown/profile-dropdown.css">
+    <link rel="stylesheet" href="./components/search/search.css">
+    <link rel="stylesheet" href="./components/sidebar/sidebar.css">
+    <link rel="stylesheet" href="./components/feed/feed.css">
+    <link rel="stylesheet" href="./components/explore/explore.css">
+    <link rel="stylesheet" href="./components/post/post.css">
+    <link rel="stylesheet" href="./components/post-create/post-create.css">
+    <link rel="stylesheet" href="./components/popular-communities/communities.css">
+    <link rel="stylesheet" href="./components/chats/chats.css">
+    <link rel="stylesheet" href="./components/community-modal/community-modal.css">
+    <link rel="stylesheet" href="./components/footer/footer.css">
+    <link rel="stylesheet" href="./css/pages.css">
+    <link rel="stylesheet" href="./css/responsive.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header Component Slot -->
+        <div id="header-container"></div>
+
+        <main class="main-layout">
+            <!-- Left Sidebar Component Slot -->
+            <div id="sidebar-container"></div>
+
+            <!-- Centre Column (scrolls) -->
+            <div id="feed-container">
+                <div class="rc-spinner" aria-label="Loading"></div>
+            </div>
+            <!-- Right Column (widgets & footer links) -->
+            <div class="right-column-container"></div>
+        </main>
+    </div>
+
+    <!-- Floating Chats Pop-up Container Slot -->
+    <div id="chats-slot"></div>
+
+    <!-- Start Community Modal Wizard Slot -->
+    <div id="community-modal-slot"></div>
+
+    <script type="module" src="./js/pages/search-page.js"></script>
+</body>
+</html>

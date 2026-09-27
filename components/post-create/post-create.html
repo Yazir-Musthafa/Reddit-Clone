@@ -1,0 +1,119 @@
+<div class="post-create-canvas">
+    <div class="create-top-bar">
+        <div class="community-select-wrapper">
+            <button class="btn-select-community" id="selectCommunityBtn">
+                <span id="selectedCommunityAvatar" class="community-icon-sm" style="background-color: var(--reddit-orange); color: white;">r/</span>
+                <span id="selectedCommunityName">Select Community</span>
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+
+            <!-- Community Selector Dropdown -->
+            <div class="create-popover-menu hidden" id="communityDropdownMenu">
+                <div class="popover-header">Select a community</div>
+                <input type="text" class="rc-popover-search" id="communitySearchInput" placeholder="Search communities" autocomplete="off">
+                <div class="community-list-scroll" id="communityOptionsList">
+                    <p class="empty-drafts-text">Loading…</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="drafts-wrapper">
+            <button class="btn-drafts-link" id="draftsLink">Drafts <span id="draftsCountBadge" class="drafts-badge">0</span></button>
+
+            <!-- Drafts Dropdown Menu -->
+            <div class="create-popover-menu hidden" id="draftsDropdownMenu">
+                <div class="popover-header">Saved Drafts</div>
+                <div id="draftsListContainer" class="drafts-list-container">
+                    <p class="empty-drafts-text">No saved drafts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="create-form-card">
+        <!-- Title Input -->
+        <div class="create-title-wrapper">
+            <input type="text" id="createPostTitle" class="create-title-input" placeholder="Title*" maxlength="300" required>
+            <span class="rc-char-count" id="titleCharCount">0/300</span>
+        </div>
+
+        <!-- Add Tags Section -->
+        <div class="create-tags-wrapper">
+            <button class="btn-add-tags" id="addTagsBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <span>Add tags</span>
+            </button>
+            <div id="selectedTagsContainer" class="selected-tags-container"></div>
+
+            <!-- Tags Popover -->
+            <div class="create-popover-menu hidden" id="tagsPickerMenu">
+                <div class="popover-header">Add Post Tags</div>
+                <div class="tags-options-list">
+                    <button class="tag-option-btn" data-tag="OC"><span>+ OC</span><small>Original Content</small></button>
+                    <button class="tag-option-btn" data-tag="Spoiler"><span>+ Spoiler</span><small>Contains spoilers</small></button>
+                    <button class="tag-option-btn" data-tag="NSFW"><span>+ NSFW</span><small>Not safe for work</small></button>
+                    <button class="tag-option-btn" data-tag="Discussion"><span>+ Discussion</span><small>Community discussion</small></button>
+                    <button class="tag-option-btn" data-tag="Advice"><span>+ Advice</span><small>Seeking advice</small></button>
+                    <button class="tag-option-btn" data-tag="Showcase"><span>+ Showcase</span><small>Project showcase</small></button>
+                    <button class="tag-option-btn" data-tag="Question"><span>+ Question</span><small>Asking the community</small></button>
+                    <button class="tag-option-btn" data-tag="News"><span>+ News</span><small>Shows up in the News feed</small></button>
+                    <button class="tag-option-btn" data-tag="Meme"><span>+ Meme</span><small>Just for laughs</small></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optional Link -->
+        <div class="rc-create-link-wrapper">
+            <input type="url" id="createPostUrl" class="rc-create-link-input" placeholder="Link URL (optional), e.g. https://example.com/article" maxlength="2000">
+        </div>
+
+        <!-- Rich Text Editor Body -->
+        <div class="create-body-wrapper">
+            <div id="createPostBody" class="post-body-editor" contenteditable="true" data-placeholder="Body text (optional)"></div>
+        </div>
+
+        <!-- Attached Media Previews Container -->
+        <div id="mediaPreviewGrid" class="media-preview-grid"></div>
+
+        <!-- Hidden File Inputs -->
+        <input type="file" id="imageFileInput" accept="image/*" multiple style="display:none;">
+        <input type="file" id="videoFileInput" accept="video/*" style="display:none;">
+
+        <p class="ui-error hidden" id="createPostError"></p>
+
+        <!-- Rich Text Toolbar -->
+        <div class="rich-toolbar">
+            <div class="toolbar-left">
+                <button class="toolbar-btn" id="tbLinkBtn" title="Add Link">🔗</button>
+                <button class="toolbar-btn" id="tbImageBtn" title="Upload Image">🖼️</button>
+                <button class="toolbar-btn" id="tbVideoBtn" title="Upload Video">🎥</button>
+                <div class="toolbar-divider"></div>
+                <button class="toolbar-btn bold-btn" id="tbBoldBtn" title="Bold">B</button>
+                <button class="toolbar-btn italic-btn" id="tbItalicBtn" title="Italic">i</button>
+                <button class="toolbar-btn" id="tbStrikeBtn" title="Strikethrough">S̶</button>
+                <button class="toolbar-btn" id="tbSuperBtn" title="Superscript">X²</button>
+                <button class="toolbar-btn" id="tbHeadingBtn" title="Heading">T</button>
+                <div class="toolbar-divider"></div>
+                <button class="toolbar-btn" id="tbCodeBtn" title="Code Block">&lt;/&gt;</button>
+                <button class="toolbar-btn" id="tbQuoteBtn" title="Quote">“</button>
+                <button class="toolbar-btn" id="tbTableBtn" title="Table">🪟</button>
+                <div class="more-menu-wrapper" style="position:relative;">
+                    <button class="toolbar-btn" id="tbMoreBtn" title="More options">...</button>
+                    <div class="create-popover-menu hidden" id="moreToolbarMenu">
+                        <button class="more-menu-item" id="tbBulletListBtn"><span>•</span> Bulleted List</button>
+                        <button class="more-menu-item" id="tbNumListBtn"><span>1.</span> Numbered List</button>
+                        <button class="more-menu-item" id="tbClearFormatBtn"><span>🧹</span> Clear Formatting</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toolbar-right">
+                <button class="btn-save-draft" id="saveDraftBtn">Save Draft</button>
+                <button class="btn-post-submit" id="submitPostBtn" disabled>Post</button>
+            </div>
+        </div>
+    </div>
+</div>
+

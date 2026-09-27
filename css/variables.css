@@ -1,0 +1,60 @@
+:root {
+    /* Color System */
+    --reddit-orange: #FF4500;
+    --reddit-orange-hover: #E03D00;
+    --reddit-orange-light: #FFF0EB;
+    --text-primary: #1A1A1B;
+    --text-secondary: #57646E;
+    --text-muted: #828F9A;
+    --text-link: #0079D3;
+    
+    --background: #FFFFFF;
+    --card-background: #F6F7F8;
+    --card-border: #E5E8EA;
+    --border: #D7DADD;
+    --border-subtle: #EDF0F2;
+    
+    --hover-bg: #E5E8EA;
+    --hover-card: #EEF1F3;
+    --hover-btn-light: #DCE2E6;
+    
+    --btn-signup-bg: #E9EEF1;
+    --btn-signup-text: #0F1A1C;
+    --btn-login-bg: #FF4500;
+    --btn-login-text: #FFFFFF;
+    
+    --dark-pill-bg: #000000;
+    --dark-pill-text: #FFFFFF;
+    --dark-overlay-bg: rgba(18, 22, 25, 0.75);
+    
+    /* Font System */
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    
+    /* Spacing System */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 20px;
+    --space-2xl: 24px;
+    --space-3xl: 32px;
+    
+    /* Border Radii */
+    --radius-small: 8px;
+    --radius-medium: 12px;
+    --radius-large: 16px;
+    --radius-pill: 999px;
+    --radius-search: 24px;
+    
+    /* Expanded Dimensions for Wider Left/Right Sidebar Pushing */
+    --max-content-width: 1560px;
+    --header-height: 60px;
+    --col-sidebar-left: 240px;
+    --col-feed-width: 680px;
+    --col-sidebar-right: 300px;
+    --layout-gap: 32px;
+    
+    /* Shadows */
+    --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --shadow-modal: 0 8px 24px rgba(0, 0, 0, 0.16);
+}

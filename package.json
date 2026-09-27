@@ -1,0 +1,27 @@
+{
+  "name": "reddit-clone",
+  "version": "1.0.0",
+  "description": "Reddit clone: vanilla HTML/CSS/JS frontend with a Node.js + Express + MongoDB backend",
+  "main": "server/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "seed": "node server/seed.js --force",
+    "db": "mkdir -p .data/db && mongod --dbpath ./.data/db --bind_ip 127.0.0.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.2",
+    "multer": "^2.4.0",
+    "nodemailer": "^10.0.10",
+    "sanitize-html": "^2.17.7"
+  }
+}

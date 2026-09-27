@@ -1,0 +1,261 @@
+/* User Profile Wrapper */
+.user-profile-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Profile Avatar Icon SVG */
+.profile-snoo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: block;
+}
+
+.profile-snoo-icon-lg {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: block;
+}
+
+/* Profile Dropdown Container */
+.profile-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 275px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.14), 0 1px 4px rgba(0, 0, 0, 0.08);
+    padding: 8px 0;
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    animation: profileMenuFadeIn 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes profileMenuFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.profile-dropdown-menu.hidden {
+    display: none !important;
+}
+
+/* Profile Menu Item */
+.profile-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    color: #0f1a1c;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+    box-sizing: border-box;
+    gap: 12px;
+}
+
+.profile-menu-item:hover {
+    background-color: #f6f7f8;
+    color: #0f1a1c;
+}
+
+/* User Header Item */
+.profile-user-header {
+    padding: 10px 16px;
+    margin-bottom: 2px;
+}
+
+.profile-header-avatar {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-header-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.profile-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f1a1c;
+    line-height: 1.2;
+}
+
+.profile-username {
+    font-size: 12px;
+    color: #576f76;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Menu Icons */
+.menu-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    color: #0f1a1c;
+    flex-shrink: 0;
+}
+
+.menu-label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: #0f1a1c;
+}
+
+/* Extra Right Text (e.g. 6 unlocked) */
+.menu-extra-text {
+    font-size: 12px;
+    color: #576f76;
+    font-weight: 400;
+}
+
+/* Stacked Item (Earn cash on Reddit) */
+.profile-item-stacked {
+    align-items: flex-start;
+    padding: 8px 16px;
+}
+
+.profile-item-stacked .menu-icon {
+    margin-top: 2px;
+}
+
+.menu-label-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-subtext {
+    font-size: 11px;
+    color: #576f76;
+    margin-top: 1px;
+    font-weight: 400;
+}
+
+/* Toggle Switch Row (Mod Mode) */
+.profile-item-toggle {
+    justify-content: space-between;
+}
+
+.profile-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Custom Toggle Switch Widget */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #eaeded;
+    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+}
+
+.toggle-slider::before {
+    content: "";
+    height: 20px;
+    width: 20px;
+    background-color: white;
+    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-check-icon {
+    position: absolute;
+    right: 6px;
+    width: 12px;
+    height: 12px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: #0f1a1c;
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(20px);
+}
+
+.toggle-switch input:checked + .toggle-slider .toggle-check-icon {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Divider Line */
+.profile-menu-divider {
+    height: 1px;
+    background-color: #edeff1;
+    margin: 6px 0;
+}
+
+/* BETA Badge */
+.menu-beta-badge {
+    background-color: #ff4500;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+/* Button Action Override */
+.profile-btn-action {
+    font-family: inherit;
+}
