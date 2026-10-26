@@ -45,16 +45,20 @@ app.use('/api', api);
 
 // ---- Static frontend ---------------------------------------------------------------
 // Only the frontend folders are exposed; server code, node_modules and .data stay private.
-for (const dir of ['css', 'js', 'components', 'assets', 'uploads']) {
-    app.use(`/${dir}`, express.static(path.join(ROOT, dir), { fallthrough: false }));
+const FRONTEND = path.join(ROOT, 'frontend');
+
+for (const dir of ['css', 'js', 'components', 'assets']) {
+    app.use(`/${dir}`, express.static(path.join(FRONTEND, dir), { fallthrough: false }));
 }
-const pages = new Set(fs.readdirSync(ROOT).filter(f => f.endsWith('.html')));
-app.get('/', (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
+app.use('/uploads', express.static(path.join(ROOT, 'uploads'), { fallthrough: false }));
+
+const pages = new Set(fs.readdirSync(FRONTEND).filter(f => f.endsWith('.html')));
+app.get('/', (req, res) => res.sendFile(path.join(FRONTEND, 'index.html')));
 app.get('/:page', (req, res, next) => {
-    if (pages.has(req.params.page)) return res.sendFile(path.join(ROOT, req.params.page));
+    if (pages.has(req.params.page)) return res.sendFile(path.join(FRONTEND, req.params.page));
     next();
 });
-app.use((req, res) => res.status(404).sendFile(path.join(ROOT, 'page.html')));
+app.use((req, res) => res.status(404).sendFile(path.join(FRONTEND, 'page.html')));
 
 // ---- Errors ------------------------------------------------------------------------
 // eslint-disable-next-line no-unused-vars

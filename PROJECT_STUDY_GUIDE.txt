@@ -1,0 +1,797 @@
+================================================================================
+           COMPLETE PROJECT STUDY & INTERIM EVALUATION GUIDE
+                 PROJECT: REDDIT CLONE (FULL-STACK WEB APP)
+================================================================================
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. PROJECT TECH STACK & TOOLS OVERVIEW
+2. INTERIM EVALUATION RUBRIC BREAKDOWN (20 MARKS)
+3. COMPLETE WORKSPACE FILE INVENTORY & EXPLANATIONS (EVERY FILE COVERED)
+   3.1 Backend Server Files (server/)
+   3.2 Backend Middleware (server/middleware/)
+   3.3 Backend Data Models (server/models/)
+   3.4 Backend API Routes (server/routes/)
+   3.5 Backend Utility Modules (server/utils/)
+   3.6 Frontend Core JavaScript Files (js/)
+   3.7 Frontend Page Controller Scripts (js/pages/)
+   3.8 Frontend UI Components (components/)
+   3.9 HTML Pages & Views
+4. MODULE I: JAVASCRIPT & FRONTEND / DOM
+   4.1 Overview & General Syntactic Characteristics
+   4.2 Object Orientation in JavaScript (Classes & Inheritance)
+   4.3 Primitive Operations, Math & Expressions
+   4.4 Control Statements (if/else, switch, loops, try/catch)
+   4.5 Screen Output & Keyboard Input
+   4.6 Object Creation, Maps & Sets
+   4.7 Arrays & Array Methods (.map, .filter, .reduce, .splice, etc.)
+   4.8 Functions, Higher-Order Functions & Closures
+   4.9 Regular Expressions (Regex) - EVERY Code Base Usage
+   4.10 Asynchronous Programming (Promises, async/await, fetch)
+   4.11 Document Object Model (DOM) Manipulation
+   4.12 Handling Events & Event Delegation
+   4.13 HTTP and Forms (FormData, JSON Payloads)
+5. MODULE II: INTRODUCTION TO MONGODB
+   5.1 Introduction & Data Model (Collections, Documents, Data Types)
+   5.2 Mongoose Schemas & Model Definitions
+   5.3 CRUD Operations (Create, Read, Update, Delete) with Line Numbers
+   5.4 Database Indexing & Query Processing (Aggregation Pipelines)
+6. MODULE III: INTRODUCTION TO REST AND NODE.JS
+   6.1 REST Principles, Constraints & HTTP Status Codes
+   6.2 Role of APIs in Web Development
+   6.3 Node.js Architecture (Event Loop, Non-blocking I/O)
+   6.4 Role of NPM & Package Dependency Management
+   6.5 Creating a Server & Handling HTTP Methods
+7. MODULE IV: EXPRESS.JS & BUILDING A RESTFUL API
+   7.1 Express.js Overview & Router Architecture
+   7.2 Routing in Express (Route Params, Query Params, Body)
+   7.3 Middleware in Express (Built-in, Third-Party, Custom Middleware)
+   7.4 Validation, Error Handling & Custom Error Class
+   7.5 File Uploads with Multer & Serving Static Resources
+   7.6 Mongoose Database Connectivity
+8. VIVA VOICE / EVALUATION QUESTION & ANSWER CHEAT SHEET
+
+
+================================================================================
+1. PROJECT TECH STACK & TOOLS OVERVIEW
+================================================================================
+The project is a full-stack Reddit Clone web application. Below is the complete list of tools, stacks, and libraries used across the project:
+
+[A] FRONTEND STACK:
+- HTML5: Semantic markup (header, nav, main, section, article, footer, dialog).
+- Vanilla CSS3: Modern custom CSS properties (--variables.css), Flexbox layout, CSS Grid, Dark Mode / Light Mode styling, glassmorphism, responsive breakpoints (@media queries).
+- Vanilla JavaScript (ES6+): ES Modules (import / export syntax), Async/Await, Fetch API, DOM Manipulation, Custom Component Loader, Browser LocalStorage, Browser History API.
+
+[B] BACKEND RUNTIME & FRAMEWORK STACK:
+- Node.js (v18+): Asynchronous, single-threaded, event-driven JavaScript backend runtime.
+- Express.js (v5.2.1): Web framework providing routing (express.Router), request body parsing, static file serving, and middleware pipelines.
+
+[C] DATABASE & ODM STACK:
+- MongoDB: NoSQL document-oriented database storing data as BSON documents.
+- Mongoose (v9.10.2): Object Data Modeling (ODM) library providing schema enforcement, data validation, relationship population (.populate), and query middleware.
+
+[D] THIRD-PARTY NPM PACKAGES:
+- bcryptjs (^3.0.3): One-way password hashing algorithm with salt rounds (10) for secure user registration and login.
+- jsonwebtoken (^9.0.3): Creates and verifies signed JSON Web Tokens (JWT) for session authentication.
+- cookie-parser (^1.4.7): Parses HTTP cookie headers into accessible req.cookies objects.
+- multer (^2.4.0): Middleware for handling multipart/form-data used for file uploads (images & videos).
+- sanitize-html (^2.17.7): Cleans HTML inputs from post contenteditable editors to prevent Cross-Site Scripting (XSS) attacks.
+- nodemailer (^10.0.10): E-mail delivery helper for verification codes during password resets and registration.
+- dotenv (^18.0.4): Loads environment variables from .env files into process.env.
+
+[E] NATIVE NODE.JS CORE MODULES:
+- crypto: Cryptographic utilities for generating random verification codes (crypto.randomInt) and unique filenames (crypto.randomBytes).
+- path: Cross-platform directory and file path manipulations (path.join, path.resolve).
+- fs: File system interaction for checking HTML template existence and loading component assets.
+
+[F] DEVELOPMENT & INFRASTRUCTURE TOOLS:
+- npm (Node Package Manager): Managing dependencies, executing dev scripts (npm start, npm run dev, npm run db, npm run seed).
+- mongod: Local MongoDB database daemon process running on port 27017 or local folder ./.data/db.
+- Web Browser DevTools: Network tab for monitoring REST API calls, Console for client logging, Application tab for examining cookies (rc_token) and LocalStorage (rc_recent_posts, rc_theme).
+
+
+================================================================================
+2. INTERIM EVALUATION RUBRIC BREAKDOWN (20 MARKS)
+================================================================================
+Criteria 1: Server & Routing (4 Marks)
+- Express server initialization in server/server.js:14.
+- Modular router structure in server/routes/ (auth.js, posts.js, communities.js, users.js, comments.js, misc.js, company.js).
+- Clear HTTP method mapping (GET, POST, PATCH, DELETE).
+
+Criteria 2: Database & CRUD (4 Marks)
+- Schema definitions in server/models/ (User.js, Post.js, Community.js, Comment.js, misc.js, company.js).
+- MongoDB connection using Mongoose in server/server.js:84.
+- Complete CRUD operations (Create, Read, Update, Delete) implemented across API endpoints.
+
+Criteria 3: Validation & Error Handling (4 Marks)
+- Input validation using Regular Expressions (USERNAME_RE, EMAIL_RE, COMMUNITY_RE) in server/utils/helpers.js:61-64.
+- Custom HttpError class extending Error in server/utils/helpers.js:3-8.
+- Centralized Error-handling middleware in server/server.js:61-81 returning structured JSON responses.
+
+Criteria 4: Developer & Team Skills (4 Marks)
+- Confident code explanation using this guide.
+- Solid grasp of asynchronous flow, closure state, event delegation, and database queries.
+
+Criteria 5: Code Quality & Documentation (4 Marks)
+- Clean ES Module design on frontend, CommonJS on backend.
+- Modular utilities in server/utils/ and js/utils.js.
+- Comprehensive inline comments and descriptive REST routes.
+
+
+================================================================================
+3. COMPLETE WORKSPACE FILE INVENTORY & EXPLANATIONS
+================================================================================
+
+--------------------------------------------------------------------------------
+3.1 Backend Server Files (server/)
+--------------------------------------------------------------------------------
+1. server/server.js
+   - Role: Main entry point of the entire Node/Express application.
+   - Key Logic: Connects to MongoDB, sets up security headers (X-Content-Type-Options: nosniff), mounts middleware (express.json, cookieParser), mounts API sub-routers (/api/auth, /api/posts, etc.), serves static frontend files, defines centralized error-handling middleware, and starts HTTP server on port 3000.
+
+2. server/config.js
+   - Role: Environment configuration loader.
+   - Key Logic: Sets port (3000), mongoUri (mongodb://127.0.0.1:27017/reddit-clone), jwtSecret, jwtExpiresDays (30 days), uploadMaxBytes (50MB), and development/production flags.
+
+3. server/seed.js
+   - Role: Database seeder script.
+   - Key Logic: Populates MongoDB with demo users (e.g. u/admin, u/alex), sample subreddits (r/technology, r/gaming, r/askreddit), posts, and nested comments for testing.
+
+4. server/seed-company.js
+   - Role: Secondary seeder for company pages.
+   - Key Logic: Inserts static mock data for Careers job listings and Press news releases into MongoDB.
+
+--------------------------------------------------------------------------------
+3.2 Backend Middleware (server/middleware/)
+--------------------------------------------------------------------------------
+1. server/middleware/auth.js
+   - Role: Authentication and Security middleware module.
+   - Key Logic:
+     * setAuthCookie(res, user): Signs JWT token using jsonwebtoken and attaches it as HTTP-only cookie.
+     * clearAuthCookie(res): Clears authentication session cookie.
+     * optionalAuth(req, res, next): Checks for JWT cookie; if present, decodes payload and attaches req.user without rejecting unauthenticated users.
+     * requireAuth(req, res, next): Enforces authentication; throws HttpError(401) if req.user is absent.
+     * rateLimit({ windowMs, max }): Custom fixed-window rate limiter closure storing client IP request counts in a Map.
+
+--------------------------------------------------------------------------------
+3.3 Backend Data Models (server/models/)
+--------------------------------------------------------------------------------
+1. server/models/User.js
+   - Role: Mongoose model for registered users.
+   - Fields: username, usernameLower (unique index), email (unique index), passwordHash (bcrypt), postKarma, commentKarma, joinedCommunities (ref: Community), savedPosts (ref: Post), customFeeds (subdocument array), prefs.
+
+2. server/models/Post.js
+   - Role: Mongoose model for Reddit posts.
+   - Fields: title, body (sanitized HTML), bodyText (plain text preview), url, media (image/video array), author (ref: User), community (ref: Community), score, upvotes, downvotes, hotScore (indexed), bestScore (indexed), removed (boolean).
+
+3. server/models/Community.js
+   - Role: Mongoose model for Subreddit communities.
+   - Fields: name, nameLower (unique index), description, topic, type (Public/Restricted/Private enum), mature (boolean), memberCount (indexed), creator (ref: User), moderators (ref: User array), rules.
+
+4. server/models/Comment.js
+   - Role: Mongoose model for nested post comments.
+   - Fields: post (ref: Post), author (ref: User), parent (ref: Comment for threading), body, score, upvotes, downvotes, deleted (boolean).
+
+5. server/models/misc.js
+   - Role: Mongoose models for secondary features.
+   - Models: Vote (upvote/downvote tracking), Report (flagged content), Draft (saved unpublished posts), Message (direct user chats), Notification (user alerts), VerificationCode (email codes).
+
+6. server/models/company.js
+   - Role: Mongoose models for Careers and Press articles.
+   - Models: JobListing (job openings with department/location), PressRelease (news articles).
+
+--------------------------------------------------------------------------------
+3.4 Backend API Routes (server/routes/)
+--------------------------------------------------------------------------------
+1. server/routes/auth.js
+   - Role: Endpoints for user registration, authentication, and session check.
+   - Routes: GET /me, GET /check-username, POST /request-code, POST /signup, POST /login, POST /reset-password, POST /logout.
+
+2. server/routes/posts.js
+   - Role: Endpoints for post creation, retrieval, voting, saving, and deletion.
+   - Routes: GET /, GET /:id, POST /, PATCH /:id, DELETE /:id, POST /:id/vote, POST /:id/save, POST /:id/hide, POST /:id/comments.
+
+3. server/routes/communities.js
+   - Role: Endpoints for creating and interacting with communities.
+   - Routes: GET /, GET /:name, POST /, PATCH /:name, POST /:name/join, POST /:name/leave.
+
+4. server/routes/users.js
+   - Role: Endpoints for public profile viewing and account preferences update.
+   - Routes: GET /:username, PATCH /me, POST /me/feeds, DELETE /me/feeds/:id.
+
+5. server/routes/comments.js
+   - Role: Endpoints for comment voting, editing, and deletion.
+   - Routes: PATCH /:id, DELETE /:id, POST /:id/vote.
+
+6. server/routes/misc.js
+   - Role: Router for search, drafts, live chats, notifications, and file uploads.
+   - Routes: GET /search, GET /search/suggest, GET/POST/DELETE /drafts, GET/POST /chats, GET/POST /notifications, POST /uploads.
+
+7. server/routes/company.js
+   - Role: Endpoints for job listings and press announcements.
+   - Routes: GET /careers, POST /careers/apply, GET /press.
+
+--------------------------------------------------------------------------------
+3.5 Backend Utility Modules (server/utils/)
+--------------------------------------------------------------------------------
+1. server/utils/helpers.js
+   - Role: Core server helper functions and regex constants.
+   - Contains: HttpError class, sanitizeBody (XSS protection via sanitize-html), htmlToText, normalizeUrl, hotRank (Reddit formula), USERNAME_RE, EMAIL_RE, COMMUNITY_RE, COLOR_RE, escapeRegex.
+
+2. server/utils/access.js
+   - Role: Permission checking for private/restricted communities.
+   - Contains: canView, canPost, hiddenCommunityIds, isMember.
+
+3. server/utils/serialize.js
+   - Role: Transforms Mongoose database documents into safe JSON responses.
+   - Contains: serializePosts (attaches user vote state & author details), serializeComments, voteMapFor.
+
+4. server/utils/votes.js
+   - Role: Voting transaction logic for posts and comments.
+   - Contains: castVote (updates upvotes/downvotes/score dynamically and updates karma).
+
+5. server/utils/achievements.js
+   - Role: Calculates user profile badges/achievements based on karma and post history.
+
+6. server/utils/mailer.js
+   - Role: Sends verification code emails via Nodemailer or logs codes to terminal during dev mode.
+
+--------------------------------------------------------------------------------
+3.6 Frontend Core JavaScript Files (js/)
+--------------------------------------------------------------------------------
+1. js/api.js
+   - Role: Client HTTP wrapper built over native fetch API.
+   - Contains: ApiError class, request helper (handles JSON & FormData), api object (get, post, patch, del), uploadFile function.
+
+2. js/utils.js
+   - Role: Shared client utilities and formatting functions.
+   - Contains: escapeHtml, timeAgo, formatCount, formatDate, getParam, debounce, copyToClipboard, userAvatar, communityIcon, readLocal, writeLocal.
+
+3. js/auth-state.js
+   - Role: Maintains global user session state on the frontend.
+   - Key Logic: Fetches logged-in user from GET /api/auth/me on page load and notifies listeners.
+
+4. js/ui.js
+   - Role: Reusable UI modal dialogs and notification toasts.
+   - Contains: showToast, confirmDialog, formDialog, requireLogin.
+
+5. js/interactions.js
+   - Role: Handles auth modals (login, signup, verification codes) and global event bindings.
+
+6. js/router.js
+   - Role: Single-Page Application (SPA) client-side view router for home feed filtering (home, popular, news, custom).
+
+7. js/shell.js
+   - Role: Initializes global layout components (header, sidebar, chats drawer).
+
+8. js/display-mode.js
+   - Role: Controls Dark Mode / Light Mode theme switching and persists preference to LocalStorage.
+
+9. js/component-loader.js
+   - Role: Dynamically loads HTML component templates from components/ directory into placeholder div elements.
+
+10. js/community-widgets.js
+    - Role: Renders sidebar widgets for communities (rules, moderator list, topic details).
+
+11. js/app.js & js/submit-app.js
+    - Role: Main initialization scripts for index.html and submit.html pages.
+
+--------------------------------------------------------------------------------
+3.7 Frontend Page Controller Scripts (js/pages/)
+--------------------------------------------------------------------------------
+1. js/pages/post-page.js: Renders single post page with threaded nested comments tree.
+2. js/pages/community-page.js: Renders subreddit view with banner, join button, and community feed.
+3. js/pages/user-page.js: Renders user profile page with karma, saved posts, and submitted posts.
+4. js/pages/search-page.js: Controls global search interface for posts, communities, comments, and people.
+5. js/pages/settings-page.js: Controls account settings (display name, bio, password reset, preferences).
+6. js/pages/communities-page.js: Renders directory of all communities ordered by popularity.
+7. js/pages/careers-page.js: Renders company job openings and handles resume upload form submission.
+8. js/pages/press-page.js: Renders company news announcements and media contact details.
+9. js/pages/info-page.js: Controls standard static informational pages (terms, privacy).
+
+--------------------------------------------------------------------------------
+3.8 Frontend UI Components (components/)
+--------------------------------------------------------------------------------
+1. components/header/header.js: Header navigation bar, search bar auto-complete, notification dropdown, user menu.
+2. components/sidebar/sidebar.js: Navigation menu, joined communities list, custom feed creation.
+3. components/feed/feed.js: Sorting toolbar (Hot, New, Top, Rising) and post feed container.
+4. components/post/post.js: Card component rendering individual posts with voting arrows, karma counter, and action buttons.
+5. components/post-create/post-create.js: Post creation form with contenteditable rich text, media upload, and draft saving.
+6. components/chats/chats.js: Real-time user messaging drawer with conversation threads.
+7. components/community-modal/community-modal.js: Modal for creating new subreddits.
+8. components/popular-communities/communities.js: Top communities sidebar widget.
+9. components/explore/explore.js: Topic exploration drawer.
+10. components/search/search.js & components/footer/footer.js: Search input overlay & site footer.
+
+--------------------------------------------------------------------------------
+3.9 HTML Pages & Views
+--------------------------------------------------------------------------------
+- index.html: Main Reddit feed homepage.
+- post.html: Detail page for individual post and comments.
+- community.html: Subreddit page view (e.g. r/technology).
+- communities.html: Directory listing of all communities.
+- user.html: User profile view (e.g. u/alex).
+- submit.html: Post submission page.
+- search.html: Search results page.
+- settings.html: User settings page.
+- careers.html & press.html: Company pages.
+- page.html: 404 fallback page.
+
+
+================================================================================
+4. MODULE I: JAVASCRIPT & FRONTEND / DOM
+================================================================================
+
+--------------------------------------------------------------------------------
+4.1 Overview & General Syntactic Characteristics
+--------------------------------------------------------------------------------
+Key Features Used:
+- ES6 Modules: import / export syntax used throughout frontend files.
+  * File: js/api.js:5 -> export class ApiError extends Error
+  * File: js/utils.js:1 -> export function escapeHtml(value)
+  * File: components/header/header.js:1 -> import { openAuthModal } from '../../js/interactions.js';
+- Block Scoping (let / const): Eliminates variable hoisting issues.
+- Template Literals: String interpolation using backticks (`${var}`).
+  * File: js/utils.js:82 -> `...background-color:${escapeHtml(community?.color || '#FF4500')}...`
+- Destructuring Assignment:
+  * File: server/routes/posts.js:118 -> const { title, body = '', url = '' } = req.body;
+  * File: components/header/header.js:128 -> const [{ unread }, { count }] = await Promise.all([...]);
+
+--------------------------------------------------------------------------------
+4.2 Object Orientation in JavaScript (Classes & Inheritance)
+--------------------------------------------------------------------------------
+Key Concepts: Classes, inheritance (extends), constructor, super, instance properties.
+
+Every Class in Project:
+1. Backend Custom HttpError Class:
+   File: server/utils/helpers.js (Lines 3-8)
+   Snippet:
+   class HttpError extends Error {
+       constructor(status, message) {
+           super(message);
+           this.status = status;
+       }
+   }
+
+2. Frontend Custom ApiError Class:
+   File: js/api.js (Lines 5-10)
+   Snippet:
+   export class ApiError extends Error {
+       constructor(status, message) {
+           super(message);
+           this.status = status;
+       }
+   }
+
+--------------------------------------------------------------------------------
+4.3 Primitive Operations, Math & Expressions
+--------------------------------------------------------------------------------
+Key Concepts: Mathematical operations, logical operators (&&, ||, ?., ??), ternary operators.
+
+Code Examples:
+1. Mathematical Ranking Formula (Logarithmic scaling):
+   File: server/utils/helpers.js (Lines 45-50)
+   Snippet:
+   function hotRank(score, createdAt) {
+       const order = Math.log10(Math.max(Math.abs(score), 1));
+       const sign = score > 0 ? 1 : score < 0 ? -1 : 0;
+       const seconds = new Date(createdAt).getTime() / 1000 - 1134028003;
+       return Number((sign * order + seconds / 45000).toFixed(7));
+   }
+
+2. Optional Chaining (?.) & Nullish Coalescing (??):
+   File: js/utils.js (Line 2)
+   Snippet:
+   return String(value ?? '').replace(/&/g, '&amp;');
+
+--------------------------------------------------------------------------------
+4.4 Control Statements (if/else, switch, loops, try/catch)
+--------------------------------------------------------------------------------
+Code Examples:
+1. Global Error Handling Try/Catch:
+   File: server/server.js (Lines 91-97)
+   Snippet:
+   start().catch(err => {
+       console.error('[server] Failed to start:', err.message);
+       if (/ECONNREFUSED/.test(err.message)) {
+           console.error('[server] Is MongoDB running? Start it with `npm run db`');
+       }
+       process.exit(1);
+   });
+
+2. Loop over Unit Array:
+   File: js/utils.js (Lines 16-19)
+   Snippet:
+   for (const [label, size] of units) {
+       const n = Math.floor(seconds / size);
+       if (n >= 1) return label === 'd' ? `${n} days ago` : `${n} ${label} ago`;
+   }
+
+--------------------------------------------------------------------------------
+4.5 Screen Output & Keyboard Input
+--------------------------------------------------------------------------------
+Code Examples:
+1. Screen Output (Terminal / Console):
+   File: server/server.js (Line 88)
+   Snippet:
+   console.log(`[server] Reddit clone running at http://localhost:${config.port}`);
+
+2. Screen Output (UI Toast notification):
+   File: js/interactions.js (Line 15)
+   Snippet:
+   showToast('Changes saved successfully');
+
+3. Keyboard Input Event Handler (Enter key detection):
+   File: js/pages/search-page.js (Line 42)
+   Snippet:
+   searchInput.addEventListener('keydown', (e) => {
+       if (e.key === 'Enter') performSearch();
+   });
+
+--------------------------------------------------------------------------------
+4.6 Object Creation, Maps & Sets
+--------------------------------------------------------------------------------
+Code Examples:
+1. Object Literals & Property Mutation:
+   File: server/routes/posts.js (Lines 134-144)
+   Snippet:
+   const post = new Post({
+       title: cleanTitle,
+       body: cleanBody,
+       author: req.user._id,
+       community: community._id
+   });
+
+2. JavaScript Map & Set collections:
+   File: server/server.js (Line 55) -> const pages = new Set(fs.readdirSync(FRONTEND).filter(f => f.endsWith('.html')));
+   File: server/middleware/auth.js (Line 43) -> const hits = new Map(); // used for rate-limiting sliding window
+
+--------------------------------------------------------------------------------
+4.7 Arrays & Array Methods (.map, .filter, .reduce, .splice, etc.)
+--------------------------------------------------------------------------------
+Code Examples:
+1. Filter, Map, and Slice Chain:
+   File: server/routes/posts.js (Lines 128-131)
+   Snippet:
+   const cleanMedia = (Array.isArray(media) ? media : [])
+       .filter(m => m && ['image', 'video'].includes(m.type) && typeof m.url === 'string' && m.url.startsWith('/uploads/'))
+       .slice(0, 20)
+       .map(m => ({ type: m.type, url: m.url }));
+
+2. Array Mutation with Splice (Toggle item in array):
+   File: server/routes/posts.js (Lines 185-193)
+   Snippet:
+   function toggleInList(list, id) {
+       const idx = list.findIndex(x => String(x) === String(id));
+       if (idx >= 0) {
+           list.splice(idx, 1);
+           return false;
+       }
+       list.push(id);
+       return true;
+   }
+
+--------------------------------------------------------------------------------
+4.8 Functions, Higher-Order Functions & Closures
+--------------------------------------------------------------------------------
+Code Examples:
+1. Custom Rate-Limiter Middleware (Closure maintaining state in 'hits' Map):
+   File: server/middleware/auth.js (Lines 42-56)
+   Snippet:
+   function rateLimit({ windowMs, max }) {
+       const hits = new Map(); // Enclosed private state across requests
+       return (req, res, next) => {
+           const key = `${req.ip}:${req.path}`;
+           const now = Date.now();
+           const entry = hits.get(key);
+           if (!entry || now - entry.start > windowMs) {
+               hits.set(key, { start: now, count: 1 });
+               return next();
+           }
+           entry.count += 1;
+           if (entry.count > max) return next(new HttpError(429, 'Too many attempts.'));
+           next();
+       };
+   }
+
+2. Debounce Function (Closure with timer):
+   File: js/utils.js (Lines 43-49)
+   Snippet:
+   export function debounce(fn, wait = 250) {
+       let timer;
+       return (...args) => {
+           clearTimeout(timer);
+           timer = setTimeout(() => fn(...args), wait);
+       };
+   }
+
+--------------------------------------------------------------------------------
+4.9 Regular Expressions (Regex) - EVERY Code Base Usage
+--------------------------------------------------------------------------------
+1. Username Validation Regex:
+   File: server/utils/helpers.js (Line 61)
+   Pattern: /^[A-Za-z0-9_-]{3,20}$/
+   Meaning: Validates usernames between 3 to 20 characters containing letters, numbers, hyphens, or underscores.
+
+2. Community Name Validation Regex:
+   File: server/utils/helpers.js (Line 62)
+   Pattern: /^[A-Za-z0-9_]{3,21}$/
+   Meaning: Validates subreddit community names (3-21 alphanumeric chars or underscores).
+
+3. Email Address Validation Regex:
+   File: server/utils/helpers.js (Line 63)
+   Pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+   Meaning: Standard email format checking (non-whitespace before and after @ and dot).
+
+4. Hex Color Validation Regex:
+   File: server/utils/helpers.js (Line 64)
+   Pattern: /^#[0-9A-Fa-f]{6}$/
+   Meaning: Validates 6-character hex color codes (e.g. #FF4500).
+
+5. Escape Special Regex Characters:
+   File: server/utils/helpers.js (Lines 57-59)
+   Pattern: /[.*+?^${}()|[\]\\]/g
+   Meaning: Escapes user input so it can be safely passed into new RegExp().
+
+6. HTTP/HTTPS Protocol Matching Regex:
+   File: server/utils/helpers.js (Line 34)
+   Pattern: /^https?:\/\//i
+   Meaning: Case-insensitive match to check if a URL starts with http:// or https://.
+
+7. HTML Entity & Tag Escaping Regex:
+   File: js/utils.js (Lines 3-7)
+   Patterns: /&/g, /</g, />/g, /"/g, /'/g
+   Meaning: Sanitizes HTML special characters to prevent Cross-Site Scripting (XSS).
+
+8. URL Linking Regex in Comment Bodies:
+   File: js/utils.js (Line 88)
+   Pattern: /(https?:\/\/[^\s<]+)/g
+   Meaning: Auto-detects URLs in plain text comments and wraps them in HTML anchor <a> tags.
+
+9. Server Connection Error Regex:
+   File: server/server.js (Line 93)
+   Pattern: /ECONNREFUSED/
+   Meaning: Detects if database connection failed due to unstarted MongoDB service.
+
+10. Client Username Prefix Cleanup:
+    File: components/chats/chats.js (Line 37)
+    Pattern: /^u\//
+    Meaning: Removes leading "u/" prefix typed by the user in chat search.
+
+--------------------------------------------------------------------------------
+4.10 Asynchronous Programming (Promises, async/await, fetch)
+--------------------------------------------------------------------------------
+Code Examples:
+1. Parallel Asynchronous Operations (Promise.all):
+   File: components/header/header.js (Line 128)
+   Snippet:
+   const [{ unread }, { count }] = await Promise.all([
+       api.get('/notifications'),
+       api.get('/chats/unread')
+   ]);
+
+2. Client-Side Fetch Wrapper with Error Handling:
+   File: js/api.js (Lines 21-26)
+   Snippet:
+   try {
+       response = await fetch(`/api${url}`, options);
+   } catch {
+       throw new ApiError(0, "Can't reach the server. Is it running?");
+   }
+
+--------------------------------------------------------------------------------
+4.11 Document Object Model (DOM) Manipulation
+--------------------------------------------------------------------------------
+Code Examples:
+1. Dynamic Element Creation & Class Modification:
+   File: js/ui.js (Lines 12-18)
+   Snippet:
+   const modal = document.createElement('div');
+   modal.className = 'rc-modal-backdrop';
+   modal.innerHTML = `<div class="rc-modal">${content}</div>`;
+   document.body.appendChild(modal);
+
+2. Updating Element Content & Attributes:
+   File: components/feed/feed.js (Line 102)
+   Snippet:
+   status.innerHTML = `<div class="rc-empty-state"><p>${escapeHtml(err.message)}</p></div>`;
+
+--------------------------------------------------------------------------------
+4.12 Handling Events & Event Delegation
+--------------------------------------------------------------------------------
+Code Examples:
+1. Form Submit Event Handling with preventDefault():
+   File: components/post-create/post-create.js (Lines 45-50)
+   Snippet:
+   form.addEventListener('submit', async (e) => {
+       e.preventDefault();
+       const title = form.querySelector('[name="title"]').value;
+       await api.post('/posts', { title });
+   });
+
+2. Event Delegation (Capturing clicks on dynamic list items):
+   File: components/header/header.js (Line 152)
+   Snippet:
+   dropdown.addEventListener('click', async (e) => {
+       const item = e.target.closest('.notif-item');
+       if (item) {
+           await api.post(`/notifications/${item.dataset.id}/read`);
+       }
+   });
+
+--------------------------------------------------------------------------------
+4.13 HTTP and Forms (FormData & JSON Payloads)
+--------------------------------------------------------------------------------
+Code Examples:
+1. Handling File Uploads using FormData:
+   File: js/api.js (Lines 47-51)
+   Snippet:
+   export function uploadFile(file) {
+       const form = new FormData();
+       form.append('file', file);
+       return request('POST', '/uploads', form); // multipart/form-data
+   }
+
+
+================================================================================
+5. MODULE II: INTRODUCTION TO MONGODB
+================================================================================
+
+--------------------------------------------------------------------------------
+5.1 Introduction & Data Model
+--------------------------------------------------------------------------------
+- NoSQL Document Store: Stores data in flexible, JSON-like BSON (Binary JSON) documents.
+- Collections: Equivalent to SQL tables (`users`, `posts`, `communities`, `comments`, `messages`).
+- Documents: Records inside collections with field-value pairs.
+- Data Types Used: ObjectId, String, Number, Boolean, Date, Arrays, Subdocuments.
+
+--------------------------------------------------------------------------------
+5.2 Mongoose Schemas & Model Definitions
+--------------------------------------------------------------------------------
+File 1: User Schema -> server/models/User.js (Lines 9-33)
+File 2: Post Schema -> server/models/Post.js (Lines 3-23)
+File 3: Community Schema -> server/models/Community.js (Lines 3-21)
+File 4: Comment Schema -> server/models/Comment.js (Lines 3-11)
+
+--------------------------------------------------------------------------------
+5.3 CRUD Operations (Create, Read, Update, Delete) with Line Numbers
+--------------------------------------------------------------------------------
+1. CREATE Operations:
+   - Creating a User: server/routes/auth.js (Line 154) -> const user = await User.create({ username, email, passwordHash });
+   - Creating a Post: server/routes/posts.js (Line 134, 146) -> const post = new Post({ title, body, author, community }); await post.save();
+   - Creating a Vote: server/routes/posts.js (Line 147) -> await Vote.create({ user: req.user._id, targetType: 'Post', target: post._id, dir: 1 });
+
+2. READ Operations:
+   - Find single document by ID: server/routes/posts.js (Line 24) -> await Post.findById(id).populate('author').populate('community');
+   - Find multiple documents: server/routes/posts.js (Lines 62-67) -> await Post.find(where).sort().skip().limit().populate();
+   - Check document existence: server/routes/auth.js (Line 96) -> await User.exists({ usernameLower: name.toLowerCase() });
+
+3. UPDATE Operations:
+   - Update field & save: server/routes/auth.js (Lines 197-198) -> user.passwordHash = hash; await user.save();
+   - Atomic field increment ($inc): server/routes/posts.js (Line 249) -> await Post.updateOne({ _id: post._id }, { $inc: { commentCount: 1 } });
+   - Update multiple documents: server/routes/auth.js (Line 165) -> await Community.updateMany({ _id: { $in: ids } }, { $inc: { memberCount: 1 } });
+
+4. DELETE Operations:
+   - Soft Delete: server/routes/posts.js (Lines 175-176) -> post.removed = true; await post.save();
+   - Hard Delete: server/routes/misc.js (Line 134) -> await Draft.deleteOne({ _id: req.params.id, user: req.user._id });
+
+--------------------------------------------------------------------------------
+5.4 Database Indexing & Query Processing (Aggregation Pipelines)
+--------------------------------------------------------------------------------
+1. Database Indexing:
+   - Compound Indexes: server/models/Post.js (Line 25) -> postSchema.index({ community: 1, createdAt: -1 });
+   - Single Field Index: server/models/Community.js (Line 23) -> communitySchema.index({ memberCount: -1 });
+
+2. MongoDB Aggregation Pipeline:
+   File: server/routes/misc.js (Lines 145-158)
+   Snippet:
+   const convos = await Message.aggregate([
+       { $match: { $or: [{ from: me }, { to: me }] } },
+       { $sort: { createdAt: -1 } },
+       { $addFields: { other: { $cond: [{ $eq: ['$from', me] }, '$to', '$from'] } } },
+       { $group: { _id: '$other', last: { $first: '$$ROOT' }, unread: { $sum: { $cond: [{ $and: [{ $eq: ['$to', me] }, { $eq: ['$readAt', null] }] }, 1, 0] } } } },
+       { $sort: { 'last.createdAt': -1 } },
+       { $limit: 50 }
+   ]);
+
+
+================================================================================
+6. MODULE III: INTRODUCTION TO REST AND NODE.JS
+================================================================================
+
+--------------------------------------------------------------------------------
+6.1 REST Principles, Constraints & HTTP Status Codes
+--------------------------------------------------------------------------------
+REST Constraints:
+1. Client-Server Separation
+2. Statelessness (via HTTP-only JWT cookies)
+3. Uniform Interface (/api/posts, /api/users, /api/communities)
+
+HTTP Status Codes Used:
+- 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 410 Gone, 429 Too Many Requests, 500 Internal Server Error.
+
+--------------------------------------------------------------------------------
+6.2 Role of APIs in Web Development
+--------------------------------------------------------------------------------
+APIs connect client-side HTML/JS views to backend database queries and business logic through structured JSON payloads over HTTP.
+
+--------------------------------------------------------------------------------
+6.3 Node.js Architecture (Event Loop, Non-blocking I/O)
+--------------------------------------------------------------------------------
+- Asynchronous, Non-blocking I/O handling database calls and disk read/writes via the libuv event loop.
+
+--------------------------------------------------------------------------------
+6.4 Role of NPM & Package Dependency Management
+--------------------------------------------------------------------------------
+Dependencies in package.json: express, mongoose, jsonwebtoken, bcryptjs, multer, cookie-parser, sanitize-html, nodemailer, dotenv.
+
+--------------------------------------------------------------------------------
+6.5 Creating a Server & Handling HTTP Methods
+--------------------------------------------------------------------------------
+File: server/server.js (Lines 83-89)
+Snippet: await mongoose.connect(config.mongoUri); app.listen(config.port, () => console.log(...));
+
+
+================================================================================
+7. MODULE IV: EXPRESS.JS & BUILDING A RESTFUL API
+================================================================================
+
+--------------------------------------------------------------------------------
+7.1 Express.js Overview & Router Architecture
+--------------------------------------------------------------------------------
+Modular routers mounted in server/server.js:26-44 using express.Router().
+
+--------------------------------------------------------------------------------
+7.2 Routing in Express (Route Params, Query Params, Body)
+--------------------------------------------------------------------------------
+1. Route Params: req.params.id (server/routes/posts.js:110)
+2. Query Params: req.query.sort, req.query.feed (server/routes/posts.js:76)
+3. Request Body: req.body (server/routes/auth.js:173)
+
+--------------------------------------------------------------------------------
+7.3 Middleware in Express
+--------------------------------------------------------------------------------
+1. Built-in: express.json(), express.static() (server/server.js:22, 49)
+2. Third-party: cookieParser(), multer (server/server.js:23, server/routes/misc.js:257)
+3. Custom Auth Middleware: optionalAuth, requireAuth (server/middleware/auth.js:23-39)
+4. Custom Rate Limiter Middleware: rateLimit (server/middleware/auth.js:42-56)
+5. Custom Global Error Handler Middleware: (err, req, res, next) (server/server.js:61-81)
+
+--------------------------------------------------------------------------------
+7.4 Validation, Error Handling & Custom Error Class
+--------------------------------------------------------------------------------
+HttpError custom class in server/utils/helpers.js:3-8 and global error handler in server/server.js:61-81.
+
+--------------------------------------------------------------------------------
+7.5 File Uploads with Multer & Serving Static Resources
+--------------------------------------------------------------------------------
+Multer disk storage configuration in server/routes/misc.js:244-264 and static route /uploads in server/server.js:49.
+
+--------------------------------------------------------------------------------
+7.6 Mongoose Database Connectivity
+--------------------------------------------------------------------------------
+Connected via await mongoose.connect(config.mongoUri) in server/server.js:84.
+
+
+================================================================================
+8. VIVA VOICE / EVALUATION QUESTION & ANSWER CHEAT SHEET
+================================================================================
+Q1: What is the tech stack of your project?
+A1: Frontend: Vanilla HTML5, CSS3 (CSS Variables, Flexbox/Grid, Dark mode), JavaScript ES6+ Modules. Backend: Node.js, Express.js REST API. Database: MongoDB with Mongoose ODM. Session Auth: JWT in HTTP-only cookies. File Uploads: Multer.
+
+Q2: How does authentication work in your project?
+A2: We use JWTs. Upon login/signup, backend signs a JWT with user ID (server/middleware/auth.js:9) and sets it in an HTTP-only cookie. On requests, optionalAuth reads the cookie and attaches req.user.
+
+Q3: How are passwords stored?
+A3: Passwords are hashed using bcrypt with salt factor 10 before saving to MongoDB (server/routes/auth.js:158).
+
+Q4: Explain all custom middleware you wrote.
+A4: 1. optionalAuth: attaches user if cookie present; 2. requireAuth: blocks unauthenticated requests with HTTP 401; 3. rateLimit: tracks client IP request windows in a Map; 4. Global Error Handler: catches HttpError, MulterError, ValidationError and returns clean JSON errors.
+
+Q5: Where is Regex used in your project?
+A5: Username regex (/^[A-Za-z0-9_-]{3,20}$/), email regex (/^[^\s@]+@[^\s@]+\.[^\s@]+$/), community regex (/^[A-Za-z0-9_]{3,21}$/), hex color regex (/^#[0-9A-Fa-f]{6}$/), HTML escaping regex, comment URL auto-linking regex, and database error checking regex (/ECONNREFUSED/).
+
+================================================================================
+                              END OF STUDY GUIDE
+================================================================================

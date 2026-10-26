@@ -55,27 +55,27 @@ Sign-up verification, one-time log in and password reset all send a 6-digit code
 ## Project structure
 
 ```text
-index.html, submit.html, post.html, community.html, user.html,
-search.html, settings.html, communities.html, careers.html,
-press.html, page.html                                     ← pages
-css/            variables, reset, layout, responsive, pages (new UI + dark mode)
-js/
-  api.js            fetch wrapper for /api
-  auth-state.js     current session
-  shell.js          loads header / sidebar / chats on every page
-  router.js         Home / Popular / News / All / Explore / custom-feed views
-  interactions.js   login, sign-up wizard, password reset, toasts
-  ui.js             dialogs, report, join helpers
-  pages/            one entry script per page
-components/     header, search, sidebar, feed, post, explore, chats,
-                community-modal, post-create, popular-communities, footer
+frontend/
+  *.html            index.html, submit.html, post.html, community.html, user.html, search.html, etc.
+  css/              variables, reset, layout, responsive, pages (new UI + dark mode)
+  js/
+    api.js            fetch wrapper for /api
+    auth-state.js     current session
+    shell.js          loads header / sidebar / chats on every page
+    router.js         Home / Popular / News / All / Explore / custom-feed views
+    interactions.js   login, sign-up wizard, password reset, toasts
+    ui.js             dialogs, report, join helpers
+    pages/            one entry script per page
+  components/       header, search, sidebar, feed, post, explore, chats,
+                    community-modal, post-create, popular-communities, footer
+  assets/           static logos and image assets
 server/
   server.js         Express app (serves /api and the static frontend)
   config.js, seed.js
   models/           User, Community, Post, Comment, Vote, Draft, Message, Notification, Report, VerificationCode
   routes/           auth, posts, comments, communities, users, misc (search, drafts, chats, notifications, uploads)
   utils/            sanitizing, ranking, serializers, access rules, votes, achievements, mailer
-uploads/        user-uploaded images and videos
+uploads/            user-uploaded images and videos
 ```
 
 ## API overview
