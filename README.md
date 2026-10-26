@@ -2,6 +2,16 @@
 
 A full-stack Reddit clone. The frontend uses **React** and **Vite**, preserving the original HTML templates and CSS, and the backend is **Node.js + Express** with **MongoDB** (Mongoose).
 
+## Technology stack
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | React 19, JavaScript, existing HTML templates and CSS |
+| Frontend tooling | Vite 8, with a multi-page build and React hot reload |
+| Backend | Node.js and Express 5 |
+| Database | MongoDB through Mongoose |
+| Browser tests | Playwright; PNG comparisons with Pixelmatch |
+
 ## Features
 
 - **Accounts:** a 6-step sign-up with email verification, log in with username or email, one-time code log in, forgot-password reset, change email or password, and delete account.
@@ -18,27 +28,69 @@ A full-stack Reddit clone. The frontend uses **React** and **Vite**, preserving 
 - **Press:** press releases with category filters, a live "by the numbers" fact sheet, downloadable brand assets, and a media-inquiry form.
 - **Also:** save, hide and report; recently viewed posts; dark mode; a mobile navigation drawer.
 
-## Running it
+## Setup
 
-**Requirements:** Node.js 22.12+ and MongoDB running locally (or a MongoDB Atlas URI).
+**Requirements:** Node.js 22.12+, npm, and MongoDB. The `npm run db` command requires `mongod` to be installed and available on your PATH. A MongoDB Atlas URI can be used instead.
+
+Run **all commands from the project root**, the folder containing `package.json` (named `awt2` on the original local machine). There is no separate install inside `frontend/` or `server/`.
 
 ```bash
+# From the project root
 npm install
-
-# Terminal 1: start MongoDB with a data folder inside the project
-npm run db
-
-# Terminal 2: start the app
-npm start            # builds React, then starts Express on port 3000
 ```
 
-Open **http://localhost:3000**. The Express server serves the production React build and the API on the same origin.
+The development defaults work without an `.env` file. To customize them, copy `.env.example` to `.env`. The default database is `mongodb://127.0.0.1:27017/reddit_clone`.
 
-For development, use `npm run dev` and open **http://localhost:5173**. This starts Vite with React hot reload and the Express backend together; Vite proxies `/api` and `/uploads` to port 3000. MongoDB must be running separately. `npm run build` creates the production frontend in `dist/`.
+## Run the app
 
-The existing `.html` page URLs, query parameters, CSS, assets, API endpoints, and cookie authentication are preserved. Each document loads a React page component. The feed, post cards, and toasts use React state; other screens use template-backed React views with the existing form/interaction controllers. `frontend/react/render.jsx` converts those templates into React elements and unmounts nested views before replacement. The rich-text editor remains an uncontrolled contenteditable region so selection, paste, and toolbar behavior stay intact.
+### Database — Terminal 1
 
-Run `npm run test:e2e` for browser interaction tests (install Chromium once with `npx playwright install chromium`). Tests use the separate `reddit_clone_react_test` database on port 3002. `npm run test:visual` compares against locally captured checkpoint screenshots under `.data/react-parity/`; create those with `node tests/visual-parity.mjs --capture` against the pre-migration app. The visual runner replays captured API responses and freezes the clock for repeatable comparisons.
+```bash
+npm run db
+```
+
+This starts MongoDB on port **27017** and keeps its files in `.data/db/`. Leave the terminal running. If MongoDB is already running, or you use Atlas, skip this command and configure `MONGODB_URI` if needed.
+
+### Backend and built React app — Terminal 2
+
+```bash
+npm start
+```
+
+This automatically runs the Vite build, then starts Express on **http://localhost:3000**. Express serves both the React build from `dist/` and the `/api` endpoints. No separate frontend process is needed to use this version.
+
+### React frontend with live updates — optional Terminal 3
+
+```bash
+npm run dev:frontend
+```
+
+Open **http://localhost:5173** when editing frontend code. Vite provides React hot reload and forwards `/api` and `/uploads` requests to the backend on port 3000. Keep Terminal 2 running for the backend.
+
+### Start frontend and backend together for development
+
+Instead of Terminals 2 and 3, run:
+
+```bash
+npm run dev
+```
+
+This builds once, starts Express with Node's file watcher, and starts Vite. Open **http://localhost:5173**; keep MongoDB running separately. Use this command instead of starting another backend on the same port. Press `Ctrl+C` in a terminal to stop its processes.
+
+| Command | Purpose |
+| --- | --- |
+| `npm run db` | Start local MongoDB on port 27017 |
+| `npm start` | Build React and start Express on port 3000 |
+| `npm run dev:frontend` | Start the Vite frontend on port 5173; requires the backend |
+| `npm run dev` | Start frontend and backend together for development |
+| `npm run build` | Generate `dist/` without starting a server |
+| `npm run test:e2e` | Run browser interaction tests |
+| `npm run test:visual` | Compare screenshots against a local baseline |
+| `npm run seed` | **Delete and re-seed the configured database** |
+
+The development proxy targets port 3000. If you change the backend `PORT`, update the proxy targets in `vite.config.mjs` too.
+
+## Demo account
 
 On first start, the database is seeded with demo communities, posts, comments and users. Log in with:
 
@@ -58,6 +110,44 @@ Sign-up verification, one-time log in and password reset all send a 6-digit code
 
 "Continue with Google / Apple / Phone" need OAuth or SMS provider credentials, so those buttons explain this and point you to email sign-in. Reddit's games, Premium, Earn and Ads open info pages instead. Job applications and media inquiries are stored in MongoDB (`jobapplications`, `pressinquiries`); there is no admin screen for reviewing them yet.
 
+## React frontend architecture
+
+The migration preserves the existing `.html` URLs, query parameters, CSS, assets, API endpoints, and cookie authentication. It uses a multi-page React setup rather than introducing new routes.
+
+- `frontend/react/main.jsx` starts React; `App.jsx` renders the shared layout and loads the matching page component.
+- `Feed.jsx`, `PostCard.jsx`, and `Toasts.jsx` use React state for their interactive UI.
+- Other screens use template-backed React views with the existing form and interaction controllers. `render.jsx` converts HTML templates into React elements and unmounts nested views before replacement. This is a compatibility-oriented migration, not a complete rewrite of every controller into React hooks.
+- Component templates are bundled by Vite instead of fetched as HTML at runtime.
+- The rich-text editor remains an uncontrolled `contenteditable` region to preserve browser selection, paste, and toolbar behavior.
+- Backend business logic and MongoDB models remain separate from the frontend. Express serves the generated frontend from `dist/`.
+
+## Testing
+
+With MongoDB running, install the test browser once and run the interaction suite:
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+Playwright starts a separate application server on port **3002** using the database **`reddit_clone_react_test`** on the same MongoDB instance. Test sessions and reports are ignored by Git.
+
+The migration validation passed **10 browser tests**, covering feed controls and navigation; post voting, saving, hiding and undo; post/comment editing and deletion; replies; image uploads and draft restore; profiles and preferences; community creation and mod settings; custom feeds; chats and notifications; careers navigation and validation; press inquiries; login/logout; and six-step signup.
+
+**52 screenshot comparisons** matched the pre-migration baseline, covering all 11 page entries and selected tab, guest/member, mobile, and dark-mode states. These checks do not guarantee every function or edge case: password-reset/code-login flows, video uploads, actual resume submission, account deletion, all permission combinations, and cross-browser behavior were not fully tested.
+
+Visual comparisons require local baseline screenshots and API fixtures in `.data/react-parity/`; they are **not included in a fresh clone**. Capture a baseline against the pre-migration checkout (`b9a91e9`) using the current visual runner, then compare against the React app with the same database:
+
+```bash
+# Capture while the pre-migration app is running
+BASE_URL=http://localhost:3000 node tests/visual-parity.mjs --capture
+
+# Compare after starting the React app
+npm run test:visual
+```
+
+The runner freezes the browser clock and replays captured API responses to make comparisons repeatable.
+
 ## Project structure
 
 ```text
@@ -70,22 +160,25 @@ frontend/
     auth-state.js     current session
     shell.js          renders shared React view regions on every page
     router.js         Home / Popular / News / All / Explore / custom-feed views
-    interactions.js   login, sign-up wizard, password reset, toasts
+    interactions.js   login, sign-up wizard, password reset; re-exports React toasts
     ui.js             dialogs, report, join helpers
     pages/            React page components and existing page controllers
   components/       header, search, sidebar, feed, post, explore, chats,
                     community-modal, post-create, popular-communities, footer
   assets/           static logos and image assets
 server/
-  server.js         Express app (serves /api and the static frontend)
+  server.js         Express app (serves /api and the built React frontend)
   config.js, seed.js
   models/           User, Community, Post, Comment, Vote, Draft, Message, Notification, Report, VerificationCode
   routes/           auth, posts, comments, communities, users, misc (search, drafts, chats, notifications, uploads)
   utils/            sanitizing, ranking, serializers, access rules, votes, achievements, mailer
 uploads/            user-uploaded images and videos
+.data/              local MongoDB files, private resumes, local test artifacts (ignored)
 dist/               generated production build (ignored by Git)
+scripts/dev.cjs     starts the backend watcher and Vite together
 tests/              browser interactions and visual parity checks
 vite.config.mjs     multi-page React build and development proxy
+playwright.config.mjs  isolated browser-test server configuration
 ```
 
 ## API overview
