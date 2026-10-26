@@ -1,3 +1,5 @@
+import { renderMarkup } from '../../react/render.jsx';
+import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
 import { api } from '../api.js';
 import { authState } from '../auth-state.js';
@@ -9,7 +11,7 @@ import { escapeHtml, getParam, communityIcon, formatNumber } from '../utils.js';
 
 let community = null;
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initializePage() {
     await initShell();
     const container = document.getElementById('feed-container');
     const name = getParam('name');
@@ -17,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         ({ community } = await api.get(`/communities/${encodeURIComponent(name || '')}`));
     } catch (err) {
-        container.innerHTML = `
+        renderMarkup(container, `
             <div class="rc-empty-state">
                 <h3>Sorry, there aren't any communities on Reddit with that name.</h3>
                 <p>${escapeHtml(err.message)}</p>
@@ -25,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <a class="ui-btn ui-btn-secondary" href="index.html?view=explore">Explore communities</a>
                     ${authState.getState().isLoggedIn ? '<button class="ui-btn ui-btn-primary" id="createMissingCommunity">Create community</button>' : ''}
                 </div>
-            </div>`;
+            </div>`);
         document.getElementById('createMissingCommunity')?.addEventListener('click', async () => {
             const { openCommunityModal } = await import('../../components/community-modal/community-modal.js');
             openCommunityModal();
@@ -36,12 +38,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.title = `r/${community.name}`;
     render();
     if (getParam('modtools') && community.isMod) openSettingsDialog();
-});
+};
 
 function render() {
     const container = document.getElementById('feed-container');
     const joined = authState.isJoined(community.name);
-    container.innerHTML = `
+    renderMarkup(container, `
         <div class="rc-community-page">
             <div class="rc-community-banner no-invert" style="background-color:${escapeHtml(community.bannerColor)}"></div>
             <div class="rc-community-header">
@@ -64,7 +66,7 @@ function render() {
                     ${moderatorsCardHtml(community)}
                 </aside>
             </div>
-        </div>`;
+        </div>`);
 
     const joinBtn = document.getElementById('communityJoinBtn');
     joinBtn.onclick = async () => {
@@ -81,14 +83,14 @@ function render() {
 
     const feedEl = document.getElementById('communityFeed');
     if (!community.canView) {
-        feedEl.innerHTML = `<div class="rc-empty-state"><h3>🔒 r/${escapeHtml(community.name)} is private</h3>
-            <p>Only approved members can view and contribute. Message the moderators to ask for access.</p></div>`;
+        renderMarkup(feedEl, `<div class="rc-empty-state"><h3>🔒 r/${escapeHtml(community.name)} is private</h3>
+            <p>Only approved members can view and contribute. Message the moderators to ask for access.</p></div>`);
         return;
     }
     if (community.mature && !authState.user?.prefs?.showMature && !sessionStorage.getItem(`rc_mature_ok_${community.name}`)) {
-        feedEl.innerHTML = `<div class="rc-empty-state"><h3>r/${escapeHtml(community.name)} is an 18+ community</h3>
+        renderMarkup(feedEl, `<div class="rc-empty-state"><h3>r/${escapeHtml(community.name)} is an 18+ community</h3>
             <p>You must be at least 18 to view this community.</p>
-            <button class="ui-btn ui-btn-primary" id="matureContinueBtn">I'm over 18, continue</button></div>`;
+            <button class="ui-btn ui-btn-primary" id="matureContinueBtn">I'm over 18, continue</button></div>`);
         document.getElementById('matureContinueBtn').onclick = () => {
             try { sessionStorage.setItem(`rc_mature_ok_${community.name}`, '1'); } catch { /* ignore */ }
             mountCommunityFeed(feedEl);
@@ -207,7 +209,7 @@ function openUsersDialog() {
             const input = card.querySelector('#modUsername');
             const error = card.querySelector('[data-error]');
             const refresh = () => {
-                card.querySelector('#modUsersList').innerHTML = listHtml();
+                renderMarkup(card.querySelector('#modUsersList'), listHtml());
                 bindRemove();
             };
             const act = async (role) => {
@@ -241,4 +243,10 @@ function openUsersDialog() {
             card.querySelector('[data-role="moderators"]').onclick = () => act('moderators');
         }
     }).then(() => render());
+}
+
+
+export default function Page() {
+    usePage(initializePage);
+    return null;
 }

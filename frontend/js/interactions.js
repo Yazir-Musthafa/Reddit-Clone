@@ -1,3 +1,5 @@
+import { showToast } from '../react/Toasts.jsx';
+import { renderMarkup } from '../react/render.jsx';
 import { authState } from './auth-state.js';
 import { api } from './api.js';
 import { escapeHtml, debounce } from './utils.js';
@@ -138,7 +140,7 @@ function bindProviderPills(modal) {
  * ------------------------------------------------------------- */
 function renderLogInModal(notice = '') {
     const modal = getModal();
-    modal.innerHTML = `
+    renderMarkup(modal, `
         <div class="reddit-modal-card">
             <button class="reddit-modal-close" id="modalCloseBtn" aria-label="Close modal">${ICONS.close}</button>
             <h2 class="reddit-modal-title">Log In</h2>
@@ -164,7 +166,7 @@ function renderLogInModal(notice = '') {
                 <p class="signup-prompt">New to Reddit? <a href="#" class="signup-link" id="modalSignUpLink">Sign Up</a></p>
             </div>
             <button class="reddit-login-submit-btn" id="modalSubmitBtn">Log In</button>
-        </div>`;
+        </div>`);
 
     const userInput = modal.querySelector('#modalInputUser');
     const passInput = modal.querySelector('#modalInputPass');
@@ -202,7 +204,7 @@ function renderLogInModal(notice = '') {
 function renderEmailCodeStart(purpose, prefill = '') {
     const modal = getModal();
     const isReset = purpose === 'reset';
-    modal.innerHTML = `
+    renderMarkup(modal, `
         <div class="reddit-modal-card">
             <button class="reddit-modal-back" id="modalBackBtn" aria-label="Go back">${ICONS.back}</button>
             <button class="reddit-modal-close" id="modalCloseBtn" aria-label="Close modal">${ICONS.close}</button>
@@ -216,7 +218,7 @@ function renderEmailCodeStart(purpose, prefill = '') {
             </div>
             <p class="auth-error hidden"></p>
             <button class="reddit-login-submit-btn ${prefill.includes('@') ? 'enabled' : ''}" id="codeSendBtn" style="margin-top: 16px;">${isReset ? 'Reset Password' : 'Send Code'}</button>
-        </div>`;
+        </div>`);
 
     const emailInput = modal.querySelector('#codeEmailInput');
     const sendBtn = modal.querySelector('#codeSendBtn');
@@ -240,7 +242,7 @@ function renderEmailCodeStart(purpose, prefill = '') {
 function renderEmailCodeVerify(purpose, email, devCode) {
     const modal = getModal();
     const isReset = purpose === 'reset';
-    modal.innerHTML = `
+    renderMarkup(modal, `
         <div class="reddit-modal-card">
             <button class="reddit-modal-back" id="modalBackBtn" aria-label="Go back">${ICONS.back}</button>
             <h2 class="reddit-modal-title">Check your email</h2>
@@ -258,7 +260,7 @@ function renderEmailCodeVerify(purpose, email, devCode) {
             </div>` : ''}
             <p class="auth-error hidden"></p>
             <button class="reddit-login-submit-btn" id="codeVerifyBtn" style="margin-top: 16px;">${isReset ? 'Reset Password' : 'Log In'}</button>
-        </div>`;
+        </div>`);
 
     const codeInput = modal.querySelector('#codeInput');
     const passInput = modal.querySelector('#newPassInput');
@@ -301,7 +303,7 @@ function openSignUpStep(step) {
 
 // STEP 1: Email
 function renderSignUpStep1(modal) {
-    modal.innerHTML = `
+    renderMarkup(modal, `
         <div class="reddit-modal-card">
             <button class="reddit-modal-close" id="modalCloseBtn" aria-label="Close modal">${ICONS.close}</button>
             <h2 class="reddit-modal-title">Sign Up</h2>
@@ -318,7 +320,7 @@ function renderSignUpStep1(modal) {
                 <p class="signup-prompt">Already a redditor? <a href="#" class="signup-link" id="modalLogInLink">Log In</a></p>
             </div>
             <button class="reddit-login-submit-btn ${signUpState.email.includes('@') ? 'enabled' : ''}" id="step1ContinueBtn">Continue</button>
-        </div>`;
+        </div>`);
 
     const emailInput = modal.querySelector('#signUpEmail');
     const continueBtn = modal.querySelector('#step1ContinueBtn');
@@ -349,7 +351,7 @@ function renderSignUpStep1(modal) {
 // STEP 2: Email verification code
 let resendTimer = null;
 function renderSignUpStep2(modal) {
-    modal.innerHTML = `
+    renderMarkup(modal, `
         <div class="reddit-modal-card">
             <button class="reddit-modal-back" id="modalBackBtn" aria-label="Go back">${ICONS.back}</button>
             <h2 class="reddit-modal-title">Verify your email</h2>
@@ -365,7 +367,7 @@ function renderSignUpStep2(modal) {
                 <p>Check your spam folder or <button type="button" class="resend-timer" id="resendCodeBtn" disabled>Resend in 0:30</button></p>
             </div>
             <button class="reddit-login-submit-btn ${signUpState.code.length === 6 ? 'enabled' : ''}" id="step2ContinueBtn" style="margin-top: 32px;">Continue</button>
-        </div>`;
+        </div>`);
 
     const codeInput = modal.querySelector('#verifyCodeInput');
     const continueBtn = modal.querySelector('#step2ContinueBtn');
@@ -395,7 +397,7 @@ function renderSignUpStep2(modal) {
         try {
             const { devCode } = await api.post('/auth/request-code', { email: signUpState.email, purpose: 'signup' });
             signUpState.devCode = devCode || '';
-            modal.querySelector('#devCodeSlot').innerHTML = devCodeHint(signUpState.devCode);
+            renderMarkup(modal.querySelector('#devCodeSlot'), devCodeHint(signUpState.devCode));
             showToast('A new code is on its way');
             startCountdown();
         } catch (err) {
@@ -424,7 +426,7 @@ function renderSignUpStep2(modal) {
 
 // STEP 3: Username and password
 function renderSignUpStep3(modal) {
-    modal.innerHTML = `
+    renderMarkup(modal, `
         <div class="reddit-modal-card">
             <button class="reddit-modal-back" id="modalBackBtn" aria-label="Go back">${ICONS.back}</button>
             <h2 class="reddit-modal-title">Create your username and password</h2>
@@ -450,7 +452,7 @@ function renderSignUpStep3(modal) {
             </div>
             <p class="auth-error hidden"></p>
             <button class="reddit-login-submit-btn" id="step3ContinueBtn" style="margin-top: 24px;">Continue</button>
-        </div>`;
+        </div>`);
 
     const userInput = modal.querySelector('#signUpUsername');
     const passInput = modal.querySelector('#signUpPassword');
@@ -518,7 +520,7 @@ function renderSignUpStep3(modal) {
 
 // STEP 4: About you
 function renderSignUpStep4(modal) {
-    modal.innerHTML = `
+    renderMarkup(modal, `
         <div class="reddit-modal-card">
             <button class="reddit-modal-back" id="modalBackBtn" aria-label="Go back">${ICONS.back}</button>
             <div class="reddit-modal-header-top">
@@ -531,7 +533,7 @@ function renderSignUpStep4(modal) {
                 ${['Woman', 'Man', 'Non-binary', 'I prefer not to say'].map(g => `
                     <button class="gender-pill-btn ${signUpState.gender === g ? 'selected' : ''}" data-gender="${g}">${g}</button>`).join('')}
             </div>
-        </div>`;
+        </div>`);
 
     modal.querySelector('#modalBackBtn').onclick = () => openSignUpStep(3);
     modal.querySelector('#step4SkipBtn').onclick = () => {
@@ -555,7 +557,7 @@ function renderSignUpStep5(modal) {
         { name: 'Technology', icon: '💻' }, { name: 'Travel', icon: '📍' }, { name: 'Wellness', icon: '🌱' }
     ];
 
-    modal.innerHTML = `
+    renderMarkup(modal, `
         <div class="reddit-modal-card" style="max-width: 480px;">
             <button class="reddit-modal-back" id="modalBackBtn" aria-label="Go back">${ICONS.back}</button>
             <h2 class="reddit-modal-title">Choose your interests</h2>
@@ -568,7 +570,7 @@ function renderSignUpStep5(modal) {
                     </div>`).join('')}
             </div>
             <button class="reddit-login-submit-btn ${signUpState.interests.length > 0 ? 'enabled' : ''}" id="step5ContinueBtn" style="margin-top: 16px;">Continue</button>
-        </div>`;
+        </div>`);
 
     const continueBtn = modal.querySelector('#step5ContinueBtn');
     modal.querySelector('#modalBackBtn').onclick = () => openSignUpStep(4);
@@ -604,7 +606,7 @@ function renderSignUpStep6(modal) {
         'Fitness', 'Music Production', 'Space', 'History', 'Cars', 'Gardening', 'Movies', 'Web Development'];
     let showingMore = false;
 
-    modal.innerHTML = `
+    renderMarkup(modal, `
         <div class="reddit-modal-card" style="max-width: 480px;">
             <button class="reddit-modal-back" id="modalBackBtn" aria-label="Go back">${ICONS.back}</button>
             <h2 class="reddit-modal-title">Customize your feed</h2>
@@ -616,7 +618,7 @@ function renderSignUpStep6(modal) {
             <div class="topics-cloud-container" id="topicsCloud"></div>
             <p class="auth-error hidden"></p>
             <button class="reddit-login-submit-btn ${signUpState.topics.length > 0 ? 'enabled' : ''}" id="step6FinishBtn">Continue</button>
-        </div>`;
+        </div>`);
 
     const cloud = modal.querySelector('#topicsCloud');
     const searchInput = modal.querySelector('#topicsSearchInput');
@@ -629,10 +631,10 @@ function renderSignUpStep6(modal) {
         let list = query ? [...baseTopics, ...moreTopics].filter(t => t.toLowerCase().includes(query)) : all;
         const custom = query && ![...baseTopics, ...moreTopics].some(t => t.toLowerCase() === query) ? searchInput.value.trim() : '';
         if (custom) list = [...list, custom];
-        cloud.innerHTML = list.map(topic => {
+        renderMarkup(cloud, list.map(topic => {
             const selected = signUpState.topics.includes(topic);
             return `<button class="topic-pill-btn ${selected ? 'selected' : ''}" data-topic="${escapeHtml(topic)}">${selected ? '✓ ' : ''}${escapeHtml(topic === custom ? `+ ${topic}` : topic)}</button>`;
-        }).join('') + (!query && !showingMore ? '<button class="topic-pill-btn" id="showMoreTopicsBtn">Show More Topics</button>' : '');
+        }).join('') + (!query && !showingMore ? '<button class="topic-pill-btn" id="showMoreTopicsBtn">Show More Topics</button>' : ''));
 
         cloud.querySelectorAll('[data-topic]').forEach(btn => {
             btn.onclick = () => {
@@ -668,52 +670,4 @@ function renderSignUpStep6(modal) {
     });
 }
 
-export function showToast(message) {
-    let container = document.getElementById('toastContainer');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toastContainer';
-        container.style.cssText = `
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            pointer-events: none;
-        `;
-        document.body.appendChild(container);
-    }
-
-    const toast = document.createElement('div');
-    toast.className = 'toast-msg';
-    toast.setAttribute('role', 'status');
-    toast.style.cssText = `
-        background-color: #1A1A1B;
-        color: #FFFFFF;
-        padding: 12px 20px;
-        border-radius: 24px;
-        font-size: 14px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        opacity: 0;
-        transform: translateY(10px);
-        transition: all 0.25s ease;
-        pointer-events: auto;
-    `;
-    toast.textContent = message;
-    container.appendChild(toast);
-
-    requestAnimationFrame(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
-    });
-
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(10px)';
-        setTimeout(() => toast.remove(), 300);
-    }, 2800);
-}
+export { showToast } from '../react/Toasts.jsx';

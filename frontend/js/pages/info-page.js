@@ -1,3 +1,5 @@
+import { renderMarkup } from '../../react/render.jsx';
+import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
 import { getParam, escapeHtml } from '../utils.js';
 
@@ -105,7 +107,7 @@ const LANG_NAMES = { pt: 'Portuguese', de: 'German' };
 const MOVED = { careers: 'careers.html', press: 'press.html' };
 if (MOVED[getParam('p')]) window.location.replace(MOVED[getParam('p')]);
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initializePage() {
     await initShell();
     const container = document.getElementById('feed-container');
     const key = getParam('p');
@@ -113,21 +115,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!page) {
         document.title = 'Page not found - Reddit';
-        container.innerHTML = `
+        renderMarkup(container, `
             <div class="rc-empty-state">
                 <h3>Page not found</h3>
                 <p>The page you're looking for doesn't exist or has moved.</p>
                 <a class="ui-btn ui-btn-primary" href="index.html">Go home</a>
-            </div>`;
+            </div>`);
         return;
     }
 
     const lang = LANG_NAMES[getParam('lang')];
     const title = lang && key === 'best-of-reddit' ? `${page.title} in ${lang}` : page.title;
     document.title = `${title} - Reddit`;
-    container.innerHTML = `
+    renderMarkup(container, `
         <article class="rc-info-page">
             <h1>${escapeHtml(title)}</h1>
             ${page.body}
-        </article>`;
-});
+        </article>`);
+};
+
+
+export default function Page() {
+    usePage(initializePage);
+    return null;
+}

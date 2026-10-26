@@ -1,14 +1,16 @@
+import { renderMarkup } from '../../react/render.jsx';
+import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
 import { api } from '../api.js';
 import { openAuthModal } from '../interactions.js';
 import { toggleJoin } from '../ui.js';
 import { escapeHtml, communityIcon, formatCount } from '../utils.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initializePage() {
     const { isLoggedIn } = await initShell();
     const container = document.getElementById('feed-container');
     if (!isLoggedIn) {
-        container.innerHTML = '<div class="rc-empty-state"><h3>Log in to manage your communities</h3><button class="ui-btn ui-btn-primary" id="commLoginBtn">Log In</button></div>';
+        renderMarkup(container, '<div class="rc-empty-state"><h3>Log in to manage your communities</h3><button class="ui-btn ui-btn-primary" id="commLoginBtn">Log In</button></div>');
         document.getElementById('commLoginBtn').onclick = () => openAuthModal('Log In');
         return;
     }
@@ -18,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         ({ joined, moderated } = await api.get('/users/me/communities'));
     } catch (err) {
-        container.innerHTML = `<div class="rc-empty-state"><p>${escapeHtml(err.message)}</p></div>`;
+        renderMarkup(container, `<div class="rc-empty-state"><p>${escapeHtml(err.message)}</p></div>`);
         return;
     }
 
@@ -33,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${showJoin ? `<button class="btn-community-join ${c.joined ? 'joined' : ''}" data-join-community="${escapeHtml(c.name)}">${c.joined ? 'Joined' : 'Join'}</button>` : ''}
         </div>`;
 
-    container.innerHTML = `
+    renderMarkup(container, `
         <div class="rc-settings-page">
             <h1 class="rc-view-title">Manage Communities</h1>
             <div class="ui-dialog-actions" style="justify-content:flex-start;margin-bottom:16px;">
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${moderated.length ? `<h2 class="rc-section-heading">Communities you moderate</h2><div class="rc-search-list">${moderated.map(c => row(c, false)).join('')}</div>` : ''}
             <h2 class="rc-section-heading">Joined (${joined.length})</h2>
             <div class="rc-search-list">${joined.map(c => row(c)).join('') || '<p class="rc-muted-text">You haven\'t joined any communities yet.</p>'}</div>
-        </div>`;
+        </div>`);
 
     container.querySelectorAll('.btn-community-join').forEach(btn => {
         btn.onclick = () => {
@@ -55,4 +57,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { openCommunityModal } = await import('../../components/community-modal/community-modal.js');
         openCommunityModal();
     };
-});
+};
+
+
+export default function Page() {
+    usePage(initializePage);
+    return null;
+}

@@ -1,6 +1,6 @@
 # Reddit Clone
 
-A full-stack Reddit clone. The frontend is plain HTML, CSS and ES-module JavaScript (no framework, no build step), and the backend is **Node.js + Express** with **MongoDB** (Mongoose).
+A full-stack Reddit clone. The frontend uses **React** and **Vite**, preserving the original HTML templates and CSS, and the backend is **Node.js + Express** with **MongoDB** (Mongoose).
 
 ## Features
 
@@ -20,7 +20,7 @@ A full-stack Reddit clone. The frontend is plain HTML, CSS and ES-module JavaScr
 
 ## Running it
 
-**Requirements:** Node.js 18+ and MongoDB running locally (or a MongoDB Atlas URI).
+**Requirements:** Node.js 22.12+ and MongoDB running locally (or a MongoDB Atlas URI).
 
 ```bash
 npm install
@@ -29,10 +29,16 @@ npm install
 npm run db
 
 # Terminal 2: start the app
-npm start            # or: npm run dev  (restarts on file changes)
+npm start            # builds React, then starts Express on port 3000
 ```
 
-Open **http://localhost:3000**.
+Open **http://localhost:3000**. The Express server serves the production React build and the API on the same origin.
+
+For development, use `npm run dev` and open **http://localhost:5173**. This starts Vite with React hot reload and the Express backend together; Vite proxies `/api` and `/uploads` to port 3000. MongoDB must be running separately. `npm run build` creates the production frontend in `dist/`.
+
+The existing `.html` page URLs, query parameters, CSS, assets, API endpoints, and cookie authentication are preserved. Each document loads a React page component. The feed, post cards, and toasts use React state; other screens use template-backed React views with the existing form/interaction controllers. `frontend/react/render.jsx` converts those templates into React elements and unmounts nested views before replacement. The rich-text editor remains an uncontrolled contenteditable region so selection, paste, and toolbar behavior stay intact.
+
+Run `npm run test:e2e` for browser interaction tests (install Chromium once with `npx playwright install chromium`). Tests use the separate `reddit_clone_react_test` database on port 3002. `npm run test:visual` compares against locally captured checkpoint screenshots under `.data/react-parity/`; create those with `node tests/visual-parity.mjs --capture` against the pre-migration app. The visual runner replays captured API responses and freezes the clock for repeatable comparisons.
 
 On first start, the database is seeded with demo communities, posts, comments and users. Log in with:
 
@@ -56,16 +62,17 @@ Sign-up verification, one-time log in and password reset all send a 6-digit code
 
 ```text
 frontend/
-  *.html            index.html, submit.html, post.html, community.html, user.html, search.html, etc.
+  *.html            document entries preserving existing page URLs
+  react/            App, lazy page loading, Feed, PostCard, Toasts, template renderer
   css/              variables, reset, layout, responsive, pages (new UI + dark mode)
   js/
     api.js            fetch wrapper for /api
     auth-state.js     current session
-    shell.js          loads header / sidebar / chats on every page
+    shell.js          renders shared React view regions on every page
     router.js         Home / Popular / News / All / Explore / custom-feed views
     interactions.js   login, sign-up wizard, password reset, toasts
     ui.js             dialogs, report, join helpers
-    pages/            one entry script per page
+    pages/            React page components and existing page controllers
   components/       header, search, sidebar, feed, post, explore, chats,
                     community-modal, post-create, popular-communities, footer
   assets/           static logos and image assets
@@ -76,6 +83,9 @@ server/
   routes/           auth, posts, comments, communities, users, misc (search, drafts, chats, notifications, uploads)
   utils/            sanitizing, ranking, serializers, access rules, votes, achievements, mailer
 uploads/            user-uploaded images and videos
+dist/               generated production build (ignored by Git)
+tests/              browser interactions and visual parity checks
+vite.config.mjs     multi-page React build and development proxy
 ```
 
 ## API overview

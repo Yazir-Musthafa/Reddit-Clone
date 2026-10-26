@@ -1,3 +1,4 @@
+import { renderMarkup } from '../react/render.jsx';
 /**
  * Loads the parts every page shares: header, search, left sidebar, chats and the
  * "start a community" wizard. Pages then render their own centre and right columns.
@@ -51,7 +52,7 @@ export async function initShell() {
 export async function renderRightColumn(widgets = 'communities', { topHtml = '' } = {}) {
     const rightCol = document.querySelector('.right-column-container');
     if (!rightCol) return;
-    rightCol.innerHTML = `<div class="rc-right-scroll">${topHtml}<div id="communities-container"></div></div><div id="footer-container"></div>`;
+    renderMarkup(rightCol, `<div class="rc-right-scroll">${topHtml}<div id="communities-container"></div></div><div id="footer-container"></div>`);
     if (widgets !== 'footer') {
         const template = widgets === 'communities-recent'
             ? './components/popular-communities/communities.html'

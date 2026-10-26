@@ -1,3 +1,4 @@
+import { renderMarkup, appendMarkup } from '../../react/render.jsx';
 import { api } from '../../js/api.js';
 import { authState } from '../../js/auth-state.js';
 import { toggleJoin } from '../../js/ui.js';
@@ -51,12 +52,12 @@ export async function initExplore() {
         topics = topicData.topics.filter(t => showMature || !HIDDEN_TOPICS.includes(t));
         all = communityData.communities;
     } catch (err) {
-        content.innerHTML = `<div class="rc-empty-state"><p>${escapeHtml(err.message)}</p></div>`;
+        renderMarkup(content, `<div class="rc-empty-state"><p>${escapeHtml(err.message)}</p></div>`);
         return;
     }
 
     const topicsWithCommunities = topics.filter(t => all.some(c => c.topic === t));
-    tabsScroll.insertAdjacentHTML('beforeend', topicsWithCommunities
+    appendMarkup(tabsScroll, topicsWithCommunities
         .map(t => `<button class="explore-tab-pill" data-category="${escapeHtml(t)}" role="tab">${escapeHtml(t)}</button>`).join(''));
 
     const selectTab = (category) => {
@@ -80,12 +81,12 @@ export async function initExplore() {
                 .map(t => ({ title: t, topic: t, items: all.filter(c => c.topic === t) }))
         ].filter(s => s.items.length);
 
-        content.innerHTML = sections.map(s => `
+        renderMarkup(content, sections.map(s => `
             <section class="explore-category-section">
                 <h2 class="category-section-title">${escapeHtml(s.title)}</h2>
                 <div class="community-cards-grid">${s.items.slice(0, 6).map(cardHtml).join('')}</div>
                 ${s.topic && s.items.length > 6 ? `<div class="show-more-wrapper"><button class="btn-show-more-category" data-topic="${escapeHtml(s.topic)}">Show more</button></div>` : ''}
-            </section>`).join('');
+            </section>`).join(''));
 
         content.querySelectorAll('.btn-show-more-category').forEach(btn => {
             btn.onclick = () => selectTab(btn.dataset.topic);
@@ -94,12 +95,12 @@ export async function initExplore() {
     }
 
     async function renderTopic(topic) {
-        content.innerHTML = `
+        renderMarkup(content, `
             <section class="explore-category-section">
                 <h2 class="category-section-title">${escapeHtml(topic)} Communities</h2>
                 <div class="community-cards-grid" id="topicGrid"></div>
                 <div class="show-more-wrapper hidden" id="topicMoreWrapper"><button class="btn-show-more-category" id="topicMoreBtn">Show more</button></div>
-            </section>`;
+            </section>`);
         const grid = content.querySelector('#topicGrid');
         const moreWrapper = content.querySelector('#topicMoreWrapper');
         const loaded = [];
@@ -110,12 +111,12 @@ export async function initExplore() {
                 const { communities, hasMore } = await api.get(`/communities?topic=${encodeURIComponent(topic)}&limit=24&page=${page}`);
                 page += 1;
                 loaded.push(...communities);
-                grid.insertAdjacentHTML('beforeend', communities.map(cardHtml).join(''));
+                appendMarkup(grid, communities.map(cardHtml).join(''));
                 bindCards(grid, loaded);
                 moreWrapper.classList.toggle('hidden', !hasMore);
-                if (!loaded.length) grid.innerHTML = '<p class="rc-muted-text">No communities in this topic yet.</p>';
+                if (!loaded.length) renderMarkup(grid, '<p class="rc-muted-text">No communities in this topic yet.</p>');
             } catch (err) {
-                grid.insertAdjacentHTML('beforeend', `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`);
+                appendMarkup(grid, `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`);
             }
         };
         content.querySelector('#topicMoreBtn').onclick = loadPage;

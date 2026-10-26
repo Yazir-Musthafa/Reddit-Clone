@@ -1,3 +1,4 @@
+import { renderMarkup } from '../../react/render.jsx';
 import { api } from '../../js/api.js';
 import { escapeHtml, formatNumber, formatCount, communityIcon, readLocal, writeLocal, homeViewUrl, isIndexPage } from '../../js/utils.js';
 
@@ -13,14 +14,14 @@ export async function initCommunities() {
 
     const render = () => {
         const shown = communities.slice(0, expanded ? 10 : 5);
-        listContainer.innerHTML = shown.map(item => `
+        renderMarkup(listContainer, shown.map(item => `
             <a class="community-item" href="community.html?name=${encodeURIComponent(item.name)}" data-community="${escapeHtml(item.name)}">
                 ${communityIcon(item, 32)}
                 <div class="community-info">
                     <span class="community-name">r/${escapeHtml(item.name)}</span>
                     <span class="community-members">${formatNumber(item.memberCount)} members</span>
                 </div>
-            </a>`).join('');
+            </a>`).join(''));
         if (seeMoreBtn) seeMoreBtn.textContent = expanded ? 'Explore all communities' : 'See more';
     };
 
@@ -28,7 +29,7 @@ export async function initCommunities() {
         ({ communities } = await api.get('/communities?limit=10'));
         render();
     } catch (err) {
-        listContainer.innerHTML = `<p class="rc-widget-error">${escapeHtml(err.message)}</p>`;
+        renderMarkup(listContainer, `<p class="rc-widget-error">${escapeHtml(err.message)}</p>`);
     }
 
     if (seeMoreBtn) {
@@ -53,7 +54,7 @@ function renderRecentPosts() {
 
     const recent = readLocal('rc_recent_posts', []).slice(0, 5);
     widget.classList.toggle('hidden', recent.length === 0);
-    list.innerHTML = recent.map(p => `
+    renderMarkup(list, recent.map(p => `
         <a class="recent-post-item" href="post.html?id=${encodeURIComponent(p.id)}">
             <div class="recent-post-info">
                 <div class="recent-post-meta">
@@ -64,7 +65,7 @@ function renderRecentPosts() {
                 <span class="recent-post-stats">${formatCount(p.score)} upvotes • ${formatCount(p.commentCount)} comments</span>
             </div>
             ${p.thumb ? `<div class="recent-post-thumb"><img src="${escapeHtml(p.thumb)}" alt=""></div>` : ''}
-        </a>`).join('');
+        </a>`).join(''));
 
     const clearBtn = document.getElementById('btnClearRecent');
     if (clearBtn) {

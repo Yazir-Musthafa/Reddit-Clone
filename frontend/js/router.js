@@ -1,3 +1,4 @@
+import { renderMarkup } from '../react/render.jsx';
 /**
  * Home page views: Home, Popular, News, All, Explore and custom feeds, switched in place.
  */
@@ -87,7 +88,7 @@ export async function switchView(viewName, extra = {}, { replace = false } = {})
     if (view === 'custom') {
         const feed = user?.customFeeds.find(f => f.id === extra.feed);
         if (!feed) {
-            feedContainer.innerHTML = emptyState('Custom feed not found', 'It may have been deleted.', '<a class="ui-btn ui-btn-primary" href="index.html">Go home</a>');
+            renderMarkup(feedContainer, emptyState('Custom feed not found', 'It may have been deleted.', '<a class="ui-btn ui-btn-primary" href="index.html">Go home</a>'));
             return;
         }
         document.title = `${feed.name} - Reddit`;

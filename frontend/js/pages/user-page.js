@@ -1,3 +1,5 @@
+import { renderMarkup, appendMarkup } from '../../react/render.jsx';
+import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
 import { api } from '../api.js';
 import { mountFeed } from '../../components/feed/feed.js';
@@ -15,21 +17,21 @@ const TAB_LABELS = {
     saved: 'Saved', hidden: 'Hidden', upvoted: 'Upvoted', downvoted: 'Downvoted'
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initializePage() {
     const { user: me } = await initShell();
     const container = document.getElementById('feed-container');
     const username = getParam('u') || me?.username;
 
     if (!username) {
-        container.innerHTML = '<div class="rc-empty-state"><h3>Log in to see your profile</h3></div>';
+        renderMarkup(container, '<div class="rc-empty-state"><h3>Log in to see your profile</h3></div>');
         return;
     }
 
     try {
         ({ user: profile } = await api.get(`/users/${encodeURIComponent(username)}`));
     } catch (err) {
-        container.innerHTML = `<div class="rc-empty-state"><h3>Sorry, nobody on Reddit goes by that name.</h3><p>${escapeHtml(err.message)}</p>
-            <a class="ui-btn ui-btn-primary" href="index.html">Go home</a></div>`;
+        renderMarkup(container, `<div class="rc-empty-state"><h3>Sorry, nobody on Reddit goes by that name.</h3><p>${escapeHtml(err.message)}</p>
+            <a class="ui-btn ui-btn-primary" href="index.html">Go home</a></div>`);
         return;
     }
 
@@ -38,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const requested = getParam('tab');
     const initialTab = tabs.includes(requested) ? requested : 'posts';
 
-    container.innerHTML = `
+    renderMarkup(container, `
         <div class="rc-profile-page">
             <div class="rc-page-grid">
                 <div class="rc-page-main">
@@ -61,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <aside class="rc-page-aside">${profileCardHtml()}</aside>
             </div>
-        </div>`;
+        </div>`);
 
     document.getElementById('profileChatBtn')?.addEventListener('click', () => openChatWith(profile.username));
     container.querySelectorAll('.rc-tab').forEach(tab => {
@@ -80,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         container.querySelector('.rc-tab[data-tab="achievements"]').click();
     });
     showTab(initialTab);
-});
+};
 
 function profileCardHtml() {
     const unlocked = profile.achievements.filter(a => a.unlocked);
@@ -145,7 +147,7 @@ function showTab(tab) {
 function renderComments(content) {
     let page = 0;
     let sort = 'new';
-    content.innerHTML = `
+    renderMarkup(content, `
         <div class="feed-sort-row">
             <select class="rc-inline-select" id="profileCommentSort" aria-label="Sort comments">
                 <option value="new">New</option>
@@ -153,16 +155,16 @@ function renderComments(content) {
             </select>
         </div>
         <div class="rc-profile-comments" id="profileComments"></div>
-        <div class="rc-feed-status" id="profileCommentsStatus"></div>`;
+        <div class="rc-feed-status" id="profileCommentsStatus"></div>`);
     const list = content.querySelector('#profileComments');
     const status = content.querySelector('#profileCommentsStatus');
 
     const load = async () => {
-        status.innerHTML = '<div class="rc-spinner"></div>';
+        renderMarkup(status, '<div class="rc-spinner"></div>');
         try {
             const { comments, hasMore } = await api.get(`/users/${encodeURIComponent(profile.username)}/comments?sort=${sort}&page=${page}`);
             page += 1;
-            list.insertAdjacentHTML('beforeend', comments.map(c => `
+            appendMarkup(list, comments.map(c => `
                 <a class="rc-profile-comment" href="post.html?id=${encodeURIComponent(c.post.id)}#comment-${c.id}">
                     <div class="rc-profile-comment-meta">
                         ${communityIcon(c.community, 20)}
@@ -174,20 +176,20 @@ function renderComments(content) {
                     <div class="rc-muted-text rc-small">⬆ ${formatCount(c.score)} points</div>
                 </a>`).join(''));
             if (!list.children.length) {
-                status.innerHTML = `<div class="rc-empty-state"><h3>${profile.isMe ? "You haven't" : `u/${escapeHtml(profile.username)} hasn't`} commented yet</h3></div>`;
+                renderMarkup(status, `<div class="rc-empty-state"><h3>${profile.isMe ? "You haven't" : `u/${escapeHtml(profile.username)} hasn't`} commented yet</h3></div>`);
             } else {
-                status.innerHTML = hasMore ? '<button class="ui-btn ui-btn-secondary" id="moreCommentsBtn">Load more</button>' : '<p class="rc-feed-end">That\'s all the comments</p>';
+                renderMarkup(status, hasMore ? '<button class="ui-btn ui-btn-secondary" id="moreCommentsBtn">Load more</button>' : '<p class="rc-feed-end">That\'s all the comments</p>');
                 status.querySelector('#moreCommentsBtn')?.addEventListener('click', load);
             }
         } catch (err) {
-            status.innerHTML = `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`;
+            renderMarkup(status, `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`);
         }
     };
 
     content.querySelector('#profileCommentSort').onchange = (e) => {
         sort = e.target.value;
         page = 0;
-        list.innerHTML = '';
+        renderMarkup(list, '');
         load();
     };
     load();
@@ -195,7 +197,7 @@ function renderComments(content) {
 
 function renderAchievements(content) {
     const unlocked = profile.achievements.filter(a => a.unlocked).length;
-    content.innerHTML = `
+    renderMarkup(content, `
         <p class="rc-muted-text" style="margin:12px 0;">${unlocked} of ${profile.achievements.length} unlocked</p>
         <div class="rc-achievement-grid">
             ${profile.achievements.map(a => `
@@ -204,6 +206,12 @@ function renderAchievements(content) {
                     <strong>${escapeHtml(a.name)}</strong>
                     <small>${escapeHtml(a.description)}</small>
                 </div>`).join('')}
-        </div>`;
+        </div>`);
 }
 
+
+
+export default function Page() {
+    usePage(initializePage);
+    return null;
+}

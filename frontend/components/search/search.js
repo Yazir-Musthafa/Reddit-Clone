@@ -1,3 +1,4 @@
+import { renderMarkup } from '../../react/render.jsx';
 import { api } from '../../js/api.js';
 import { escapeHtml, debounce, communityIcon, userAvatar, formatCount, getParam } from '../../js/utils.js';
 
@@ -27,7 +28,7 @@ export function initSearch() {
         try {
             const { communities, users } = await api.get(`/search/suggest?q=${encodeURIComponent(q)}`);
             if (searchInput.value.trim() !== q) return;
-            suggest.innerHTML = `
+            renderMarkup(suggest, `
                 ${communities.length ? '<div class="rc-suggest-label">Communities</div>' : ''}
                 ${communities.map(c => `
                     <a class="rc-suggest-item" href="community.html?name=${encodeURIComponent(c.name)}" role="option">
@@ -43,7 +44,7 @@ export function initSearch() {
                 <a class="rc-suggest-item rc-suggest-all" href="search.html?q=${encodeURIComponent(q)}" role="option">
                     <span class="rc-suggest-search-icon">🔍</span>
                     <span>Search for “${escapeHtml(q)}”</span>
-                </a>`;
+                </a>`);
             suggest.classList.remove('hidden');
             searchInput.setAttribute('aria-expanded', 'true');
         } catch {

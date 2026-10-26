@@ -1,3 +1,4 @@
+import { renderMarkup } from '../../react/render.jsx';
 import { openAuthModal, openProviderNotice, showToast } from '../../js/interactions.js';
 import { openCommunityModal } from '../community-modal/community-modal.js';
 import { authState } from '../../js/auth-state.js';
@@ -89,19 +90,19 @@ function renderUserLists() {
     const activeFeed = getParam('view') === 'custom' ? getParam('feed') : '';
 
     if (commList) {
-        commList.innerHTML = user.joinedCommunities.length
+        renderMarkup(commList, user.joinedCommunities.length
             ? user.joinedCommunities.map(c => `
                 <a href="community.html?name=${encodeURIComponent(c.name)}" class="drawer-nav-item sub-item ${c.name.toLowerCase() === activeCommunity ? 'active' : ''}">
                     ${communityIcon(c, 24)}<span>r/${escapeHtml(c.name)}</span>
                 </a>`).join('')
-            : '<p class="rc-sidebar-hint">Join communities to see them here.</p>';
+            : '<p class="rc-sidebar-hint">Join communities to see them here.</p>');
     }
 
     if (feedList) {
-        feedList.innerHTML = user.customFeeds.map(f => `
+        renderMarkup(feedList, user.customFeeds.map(f => `
             <a href="index.html?view=custom&feed=${encodeURIComponent(f.id)}" class="drawer-nav-item sub-item ${f.id === activeFeed ? 'active' : ''}" data-custom-feed="${escapeHtml(f.id)}">
                 <span class="game-avatar">✨</span><span>${escapeHtml(f.name)}</span>
-            </a>`).join('');
+            </a>`).join(''));
         bindNavigationItems();
     }
 }

@@ -1,3 +1,5 @@
+import { renderMarkup } from '../../react/render.jsx';
+import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
 import { api } from '../api.js';
 import { authState } from '../auth-state.js';
@@ -9,24 +11,24 @@ import { escapeHtml, getParam, userAvatar, writeLocal } from '../utils.js';
 const TABS = { account: 'Account', profile: 'Profile', preferences: 'Preferences' };
 const SWATCHES = ['#FF87A2', '#FF4500', '#FFB000', '#46D160', '#0DD3BB', '#0079D3', '#7193FF', '#9B59B6', '#1A1A1B'];
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initializePage() {
     const { isLoggedIn } = await initShell();
     const container = document.getElementById('feed-container');
     if (!isLoggedIn) {
-        container.innerHTML = '<div class="rc-empty-state"><h3>Log in to manage your settings</h3><button class="ui-btn ui-btn-primary" id="settingsLoginBtn">Log In</button></div>';
+        renderMarkup(container, '<div class="rc-empty-state"><h3>Log in to manage your settings</h3><button class="ui-btn ui-btn-primary" id="settingsLoginBtn">Log In</button></div>');
         document.getElementById('settingsLoginBtn').onclick = () => openAuthModal('Log In');
         return;
     }
 
     const initial = TABS[getParam('tab')] ? getParam('tab') : 'account';
-    container.innerHTML = `
+    renderMarkup(container, `
         <div class="rc-settings-page">
             <h1 class="rc-view-title">Settings</h1>
             <nav class="rc-tabs" role="tablist">
                 ${Object.entries(TABS).map(([k, v]) => `<button class="rc-tab ${k === initial ? 'active' : ''}" data-tab="${k}" role="tab">${v}</button>`).join('')}
             </nav>
             <div id="settingsContent"></div>
-        </div>`;
+        </div>`);
     container.querySelectorAll('.rc-tab').forEach(tab => {
         tab.onclick = () => {
             container.querySelectorAll('.rc-tab').forEach(t => t.classList.toggle('active', t === tab));
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     });
     renderTab(initial);
-});
+};
 
 function renderTab(tab) {
     const content = document.getElementById('settingsContent');
@@ -73,7 +75,7 @@ function bindForm(form, handler) {
 
 function renderAccount(content) {
     const user = authState.user;
-    content.innerHTML = `
+    renderMarkup(content, `
         ${formSection({
             id: 'emailForm', title: 'Email address', description: `Currently <strong>${escapeHtml(user.email)}</strong>`,
             submitLabel: 'Change email',
@@ -101,7 +103,7 @@ function renderAccount(content) {
             fields: `
                 <label class="ui-field-label" for="deletePassword">Password</label>
                 <input class="ui-input" type="password" name="password" id="deletePassword" autocomplete="current-password" required>`
-        })}`;
+        })}`);
 
     bindForm(content.querySelector('#emailForm'), async ({ email, password }) => {
         const { user: updated } = await api.post('/users/me/email', { email, password });
@@ -128,7 +130,7 @@ function renderAccount(content) {
 function renderProfile(content) {
     const user = authState.user;
     const draft = { avatarColor: user.avatarColor, bannerColor: user.bannerColor };
-    content.innerHTML = formSection({
+    renderMarkup(content, formSection({
         id: 'profileForm', title: 'Profile', description: 'This is how others see you on Reddit.',
         submitLabel: 'Save profile',
         fields: `
@@ -151,11 +153,11 @@ function renderProfile(content) {
             <input class="ui-input" name="displayName" id="displayName" maxlength="30" value="${escapeHtml(user.displayName)}" placeholder="${escapeHtml(user.username)}">
             <label class="ui-field-label" for="bio">About (bio)</label>
             <textarea class="ui-input ui-textarea" name="bio" id="bio" maxlength="200" rows="3" placeholder="A little about yourself">${escapeHtml(user.bio)}</textarea>`
-    });
+    }));
 
     const setAvatar = (color) => {
         draft.avatarColor = color.toUpperCase();
-        content.querySelector('#avatarPreviewImg').innerHTML = userAvatar({ avatarColor: draft.avatarColor }, 72);
+        renderMarkup(content.querySelector('#avatarPreviewImg'), userAvatar({ avatarColor: draft.avatarColor }, 72));
         content.querySelectorAll('.rc-swatch').forEach(s => s.classList.toggle('selected', s.dataset.color === draft.avatarColor));
         content.querySelector('#avatarColorInput').value = draft.avatarColor;
     };
@@ -169,8 +171,8 @@ function renderProfile(content) {
     bindForm(content.querySelector('#profileForm'), async ({ displayName, bio }) => {
         const { user: updated } = await api.patch('/users/me', { displayName, bio, ...draft });
         authState.setUser(updated);
-        document.getElementById('headerAvatar').innerHTML = userAvatar(updated, 32);
-        document.getElementById('dropdownAvatar').innerHTML = userAvatar(updated, 36);
+        renderMarkup(document.getElementById('headerAvatar'), userAvatar(updated, 32));
+        renderMarkup(document.getElementById('dropdownAvatar'), userAvatar(updated, 36));
         showToast('Profile saved');
     });
 }
@@ -182,7 +184,7 @@ function renderPreferences(content) {
             <span><strong>${label}</strong><small>${description}</small></span>
             <span class="toggle-switch"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''}><span class="toggle-slider"></span></span>
         </label>`;
-    content.innerHTML = `
+    renderMarkup(content, `
         <div class="rc-settings-section">
             <h2>Preferences</h2>
             ${toggle('prefDark', 'Dark mode', 'Saved in this browser.', isDarkMode())}
@@ -196,7 +198,7 @@ function renderPreferences(content) {
                     <option value="compact" ${prefs.defaultView === 'compact' ? 'selected' : ''}>Compact</option>
                 </select>
             </label>
-        </div>`;
+        </div>`);
 
     content.querySelector('#prefDark').onchange = () => toggleDisplayMode();
     const save = async (patch, input, label) => {
@@ -216,4 +218,10 @@ function renderPreferences(content) {
         writeLocal('rc_view', e.target.value);
         save({ defaultView: e.target.value }, e.target, 'Default view');
     };
+}
+
+
+export default function Page() {
+    usePage(initializePage);
+    return null;
 }

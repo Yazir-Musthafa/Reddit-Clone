@@ -1,3 +1,5 @@
+import { removeView, renderMarkup, appendMarkup } from '../../react/render.jsx';
+import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
 import { api } from '../api.js';
 import { authState } from '../auth-state.js';
@@ -18,15 +20,18 @@ const ASSETS = [
 
 const container = () => document.getElementById('feed-container');
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initializePage() {
     await initShell();
     route();
     window.addEventListener('popstate', route);
-});
+};
+
+let routeGeneration = 0;
 
 function route() {
+    const generation = ++routeGeneration;
     const slug = getParam('release');
-    if (slug) renderRelease(slug);
+    if (slug) renderRelease(slug, generation);
     else renderHome();
 }
 
@@ -38,7 +43,7 @@ function navigate(url) {
 
 function renderHome() {
     document.title = 'Press - Reddit';
-    container().innerHTML = `
+    renderMarkup(container(), `
         <div class="rc-company-page">
             <section class="rc-company-hero rc-hero-press no-invert">
                 <h1>Press</h1>
@@ -101,7 +106,7 @@ function renderHome() {
                     </div>
                 </form>
             </section>
-        </div>`;
+        </div>`);
 
     loadStats();
     loadReleases();
@@ -114,10 +119,10 @@ async function loadStats() {
     const el = document.getElementById('pressStats');
     try {
         const s = await api.get('/press/stats');
-        el.innerHTML = [['Redditors', s.users], ['Communities', s.communities], ['Posts', s.posts], ['Comments', s.comments]]
-            .map(([label, n]) => `<div class="rc-stat"><strong>${formatNumber(n)}</strong><span>${label}</span></div>`).join('');
+        renderMarkup(el, [['Redditors', s.users], ['Communities', s.communities], ['Posts', s.posts], ['Comments', s.comments]]
+            .map(([label, n]) => `<div class="rc-stat"><strong>${formatNumber(n)}</strong><span>${label}</span></div>`).join(''));
     } catch (err) {
-        el.innerHTML = `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`;
+        renderMarkup(el, `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`);
     }
 }
 
@@ -131,13 +136,13 @@ function loadReleases() {
     const load = async (reset) => {
         if (reset) {
             page = 0;
-            list.innerHTML = '';
+            renderMarkup(list, '');
         }
         try {
             const { releases, categories, hasMore } = await api.get(`/press/releases?page=${page}${category ? `&category=${encodeURIComponent(category)}` : ''}`);
             page += 1;
             if (!chips.children.length) {
-                chips.innerHTML = ['', ...categories].map(c => `<button class="explore-tab-pill ${c === category ? 'active' : ''}" data-category="${escapeHtml(c)}">${escapeHtml(c || 'All')}</button>`).join('');
+                renderMarkup(chips, ['', ...categories].map(c => `<button class="explore-tab-pill ${c === category ? 'active' : ''}" data-category="${escapeHtml(c)}">${escapeHtml(c || 'All')}</button>`).join(''));
                 chips.querySelectorAll('[data-category]').forEach(chip => {
                     chip.onclick = () => {
                         category = chip.dataset.category;
@@ -146,8 +151,8 @@ function loadReleases() {
                     };
                 });
             }
-            list.querySelector('.rc-spinner')?.remove();
-            list.insertAdjacentHTML('beforeend', releases.map(r => `
+            removeView(list.querySelector('.rc-spinner'));
+            appendMarkup(list, releases.map(r => `
                 <a class="rc-release-row" href="press.html?release=${encodeURIComponent(r.slug)}" data-slug="${escapeHtml(r.slug)}">
                     <span class="rc-release-meta"><span class="rc-badge">${escapeHtml(r.category)}</span> ${formatDate(r.publishedAt)}</span>
                     <strong>${escapeHtml(r.title)}</strong>
@@ -159,10 +164,10 @@ function loadReleases() {
                     navigate(`press.html?release=${encodeURIComponent(row.dataset.slug)}`);
                 };
             });
-            more.innerHTML = hasMore ? '<button class="ui-btn ui-btn-secondary">Load more</button>' : '';
+            renderMarkup(more, hasMore ? '<button class="ui-btn ui-btn-secondary">Load more</button>' : '');
             more.querySelector('button')?.addEventListener('click', () => load(false));
         } catch (err) {
-            list.innerHTML = `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`;
+            renderMarkup(list, `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`);
         }
     };
     load(true);
@@ -195,12 +200,12 @@ function bindInquiry() {
         submit.textContent = 'Sending…';
         try {
             const { reference } = await api.post('/press/inquiries', values);
-            document.getElementById('mediaInquiry').innerHTML = `
+            renderMarkup(document.getElementById('mediaInquiry'), `
                 <div class="rc-success-box">
                     <span class="rc-success-icon">📨</span>
                     <div><strong>Thanks, your inquiry was sent.</strong>
                     <p>Your reference number is <strong>${escapeHtml(reference)}</strong>. We'll reply to ${escapeHtml(values.email)}.</p></div>
-                </div>`;
+                </div>`);
             showToast('Inquiry sent');
         } catch (err) {
             error.textContent = err.message;
@@ -211,12 +216,13 @@ function bindInquiry() {
     };
 }
 
-async function renderRelease(slug) {
-    container().innerHTML = '<div class="rc-spinner"></div>';
+async function renderRelease(slug, generation) {
+    renderMarkup(container(), '<div class="rc-spinner"></div>');
     try {
         const { release } = await api.get(`/press/releases/${encodeURIComponent(slug)}`);
+        if (generation !== routeGeneration) return;
         document.title = `${release.title} - Press - Reddit`;
-        container().innerHTML = `
+        renderMarkup(container(), `
             <div class="rc-company-page">
                 <a class="rc-back-link" href="press.html" id="backToPress">← All press releases</a>
                 <article class="rc-info-page">
@@ -229,7 +235,7 @@ async function renderRelease(slug) {
                         <a class="ui-btn ui-btn-primary" href="press.html#mediaInquiry">Contact the press team</a>
                     </div>
                 </article>
-            </div>`;
+            </div>`);
         document.getElementById('backToPress').onclick = (e) => {
             e.preventDefault();
             navigate('press.html');
@@ -238,6 +244,13 @@ async function renderRelease(slug) {
             showToast((await copyToClipboard(absoluteUrl(`press.html?release=${release.slug}`))) ? 'Link copied!' : "Couldn't copy the link");
         };
     } catch (err) {
-        container().innerHTML = `<div class="rc-empty-state"><h3>${escapeHtml(err.message)}</h3><a class="ui-btn ui-btn-primary" href="press.html">Back to Press</a></div>`;
+        if (generation !== routeGeneration) return;
+        renderMarkup(container(), `<div class="rc-empty-state"><h3>${escapeHtml(err.message)}</h3><a class="ui-btn ui-btn-primary" href="press.html">Back to Press</a></div>`);
     }
+}
+
+
+export default function Page() {
+    usePage(initializePage);
+    return null;
 }

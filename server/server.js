@@ -45,9 +45,9 @@ app.use('/api', api);
 
 // ---- Static frontend ---------------------------------------------------------------
 // Only the frontend folders are exposed; server code, node_modules and .data stay private.
-const FRONTEND = path.join(ROOT, 'frontend');
+const FRONTEND = path.join(ROOT, 'dist');
 
-for (const dir of ['css', 'js', 'components', 'assets']) {
+for (const dir of ['bundles', 'assets']) {
     app.use(`/${dir}`, express.static(path.join(FRONTEND, dir), { fallthrough: false }));
 }
 app.use('/uploads', express.static(path.join(ROOT, 'uploads'), { fallthrough: false }));

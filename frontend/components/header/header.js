@@ -1,3 +1,4 @@
+import { renderMarkup } from '../../react/render.jsx';
 import { openAuthModal, showToast } from '../../js/interactions.js';
 import { toggleChatsModal, openChatWith } from '../chats/chats.js';
 import { authState } from '../../js/auth-state.js';
@@ -40,8 +41,8 @@ export function initHeader() {
     }
 
     if (isLoggedIn && user) {
-        byId('headerAvatar').innerHTML = userAvatar(user, 32);
-        byId('dropdownAvatar').innerHTML = userAvatar(user, 36);
+        renderMarkup(byId('headerAvatar'), userAvatar(user, 32));
+        renderMarkup(byId('dropdownAvatar'), userAvatar(user, 36));
         byId('dropdownUsername').textContent = `u/${user.username}`;
         byId('profileViewLink').href = `user.html?u=${encodeURIComponent(user.username)}`;
         byId('profileAchievementsLink').href = `user.html?u=${encodeURIComponent(user.username)}&tab=achievements`;
@@ -139,14 +140,14 @@ async function loadNotifications() {
         const { notifications, unread } = await api.get('/notifications');
         setBadge('notifUnreadBadge', unread);
         if (!notifications.length) {
-            list.innerHTML = '<p class="rc-notif-empty">No notifications yet. When someone replies to you or messages you, it shows up here.</p>';
+            renderMarkup(list, '<p class="rc-notif-empty">No notifications yet. When someone replies to you or messages you, it shows up here.</p>');
             return;
         }
-        list.innerHTML = notifications.map(n => `
+        renderMarkup(list, notifications.map(n => `
             <button class="rc-notif-item ${n.read ? '' : 'unread'}" data-id="${n.id}" data-link="${escapeHtml(n.link)}">
                 <span class="rc-notif-icon">${NOTIF_ICONS[n.type] || '🔔'}</span>
                 <span class="rc-notif-text">${escapeHtml(n.text)}<small>${timeAgo(n.createdAt)}</small></span>
-            </button>`).join('');
+            </button>`).join(''));
         list.querySelectorAll('.rc-notif-item').forEach(item => {
             item.onclick = async () => {
                 await api.post(`/notifications/${item.dataset.id}/read`).catch(() => {});
@@ -161,6 +162,6 @@ async function loadNotifications() {
             };
         });
     } catch (err) {
-        list.innerHTML = `<p class="rc-notif-empty">${escapeHtml(err.message)}</p>`;
+        renderMarkup(list, `<p class="rc-notif-empty">${escapeHtml(err.message)}</p>`);
     }
 }

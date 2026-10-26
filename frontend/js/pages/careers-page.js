@@ -1,3 +1,5 @@
+import { renderMarkup, appendMarkup } from '../../react/render.jsx';
+import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
 import { api } from '../api.js';
 import { authState } from '../auth-state.js';
@@ -14,15 +16,18 @@ const BENEFITS = ['Remote-friendly roles', 'Health, dental and vision cover', 'L
 
 const container = () => document.getElementById('feed-container');
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initializePage() {
     await initShell();
     route();
     window.addEventListener('popstate', route);
-});
+};
+
+let routeGeneration = 0;
 
 function route() {
+    const generation = ++routeGeneration;
     const slug = getParam('job');
-    if (slug) renderJob(slug);
+    if (slug) renderJob(slug, generation);
     else renderList();
 }
 
@@ -37,7 +42,7 @@ function navigate(url) {
 async function renderList() {
     document.title = 'Careers - Reddit';
     const { isLoggedIn } = authState.getState();
-    container().innerHTML = `
+    renderMarkup(container(), `
         <div class="rc-company-page">
             <section class="rc-company-hero rc-hero-careers no-invert">
                 <h1>Build the front page of the internet</h1>
@@ -67,7 +72,7 @@ async function renderList() {
                 <h2 class="rc-section-heading">Benefits</h2>
                 <ul>${BENEFITS.map(b => `<li>✓ ${b}</li>`).join('')}</ul>
             </section>
-        </div>`;
+        </div>`);
 
     if (isLoggedIn) loadMyApplications();
 
@@ -86,13 +91,13 @@ async function renderList() {
         try {
             const { jobs, departments, locations } = await api.get(`/careers/jobs?${params}`);
             if (!optionsFilled) {
-                department.insertAdjacentHTML('beforeend', departments.map(d => `<option>${escapeHtml(d)}</option>`).join(''));
-                location.insertAdjacentHTML('beforeend', locations.map(l => `<option>${escapeHtml(l)}</option>`).join(''));
+                appendMarkup(department, departments.map(d => `<option>${escapeHtml(d)}</option>`).join(''));
+                appendMarkup(location, locations.map(l => `<option>${escapeHtml(l)}</option>`).join(''));
                 optionsFilled = true;
             }
             renderJobs(jobs);
         } catch (err) {
-            document.getElementById('jobList').innerHTML = `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`;
+            renderMarkup(document.getElementById('jobList'), `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`);
         }
     };
 
@@ -105,11 +110,11 @@ function renderJobs(jobs) {
     document.getElementById('jobCount').textContent = `${jobs.length} open role${jobs.length === 1 ? '' : 's'}`;
     const list = document.getElementById('jobList');
     if (!jobs.length) {
-        list.innerHTML = '<div class="rc-empty-state rc-empty-small"><h3>No roles match those filters</h3><p>Try a different search or clear the filters.</p></div>';
+        renderMarkup(list, '<div class="rc-empty-state rc-empty-small"><h3>No roles match those filters</h3><p>Try a different search or clear the filters.</p></div>');
         return;
     }
     const byDept = jobs.reduce((acc, j) => ((acc[j.department] ||= []).push(j), acc), {});
-    list.innerHTML = Object.entries(byDept).map(([dept, items]) => `
+    renderMarkup(list, Object.entries(byDept).map(([dept, items]) => `
         <div class="rc-job-group">
             <h3>${escapeHtml(dept)}</h3>
             ${items.map(j => `
@@ -117,7 +122,7 @@ function renderJobs(jobs) {
                     <span class="rc-job-title">${escapeHtml(j.title)}</span>
                     <span class="rc-job-meta">📍 ${escapeHtml(j.location)} • ${escapeHtml(j.type)}${j.remote ? ' • <span class="rc-badge">Remote</span>' : ''}</span>
                 </a>`).join('')}
-        </div>`).join('');
+        </div>`).join(''));
     list.querySelectorAll('.rc-job-row').forEach(row => {
         row.onclick = (e) => {
             e.preventDefault();
@@ -131,10 +136,10 @@ async function loadMyApplications() {
     try {
         const { applications } = await api.get('/careers/applications');
         if (!applications.length) {
-            section.innerHTML = '';
+            renderMarkup(section, '');
             return;
         }
-        section.innerHTML = `
+        renderMarkup(section, `
             <h2 class="rc-section-heading">My applications</h2>
             <div class="rc-application-list">
                 ${applications.map(a => `
@@ -146,7 +151,7 @@ async function loadMyApplications() {
                         <span class="rc-badge rc-status">${escapeHtml(a.status)}</span>
                         <button class="ui-btn ui-btn-secondary" data-withdraw="${a.id}">Withdraw</button>
                     </div>`).join('')}
-            </div>`;
+            </div>`);
         section.querySelectorAll('[data-withdraw]').forEach(btn => {
             btn.onclick = async () => {
                 if (!(await confirmDialog('Withdraw this application? Your resume will be deleted.', { title: 'Withdraw application?', confirmLabel: 'Withdraw', danger: true }))) return;
@@ -160,26 +165,28 @@ async function loadMyApplications() {
             };
         });
     } catch {
-        section.innerHTML = '';
+        renderMarkup(section, '');
     }
 }
 
 // ---- Job detail & application ------------------------------------------------------------
 
-async function renderJob(slug) {
-    container().innerHTML = '<div class="rc-spinner"></div>';
+async function renderJob(slug, generation) {
+    renderMarkup(container(), '<div class="rc-spinner"></div>');
     let job;
     let appliedAt;
     try {
         ({ job, appliedAt } = await api.get(`/careers/jobs/${encodeURIComponent(slug)}`));
+        if (generation !== routeGeneration) return;
     } catch (err) {
-        container().innerHTML = `<div class="rc-empty-state"><h3>${escapeHtml(err.message)}</h3><a class="ui-btn ui-btn-primary" href="careers.html">See all open roles</a></div>`;
+        if (generation !== routeGeneration) return;
+        renderMarkup(container(), `<div class="rc-empty-state"><h3>${escapeHtml(err.message)}</h3><a class="ui-btn ui-btn-primary" href="careers.html">See all open roles</a></div>`);
         return;
     }
     document.title = `${job.title} - Careers - Reddit`;
     const user = authState.user;
 
-    container().innerHTML = `
+    renderMarkup(container(), `
         <div class="rc-company-page">
             <a class="rc-back-link" href="careers.html" id="backToJobs">← All open roles</a>
             <header class="rc-job-header">
@@ -224,7 +231,7 @@ async function renderJob(slug) {
                     </div>
                 </form>`}
             </section>
-        </div>`;
+        </div>`);
 
     document.getElementById('backToJobs').onclick = (e) => {
         e.preventDefault();
@@ -256,7 +263,7 @@ async function renderJob(slug) {
         submit.textContent = 'Submitting…';
         try {
             const result = await api.post(`/careers/jobs/${encodeURIComponent(job.slug)}/apply`, new FormData(form));
-            document.getElementById('applySection').innerHTML = appliedHtml(result.appliedAt, true);
+            renderMarkup(document.getElementById('applySection'), appliedHtml(result.appliedAt, true));
             showToast('Application submitted!');
         } catch (err) {
             error.textContent = err.message;
@@ -276,4 +283,10 @@ function appliedHtml(appliedAt, justNow = false) {
                 <p>Submitted ${formatDate(appliedAt)}. ${authState.getState().isLoggedIn ? 'Track it under “My applications” on the Careers page.' : 'We\'ll be in touch by email.'}</p>
             </div>
         </div>`;
+}
+
+
+export default function Page() {
+    usePage(initializePage);
+    return null;
 }

@@ -28,29 +28,7 @@
     <link rel="stylesheet" href="./css/responsive.css">
 </head>
 <body>
-    <div id="app">
-        <!-- Header Component Slot -->
-        <div id="header-container"></div>
-
-        <main class="main-layout">
-            <!-- Left Sidebar Component Slot -->
-            <div id="sidebar-container"></div>
-
-            <!-- Centre Column (scrolls) -->
-            <div id="feed-container">
-                <div class="rc-spinner" aria-label="Loading"></div>
-            </div>
-            <!-- Right Column (widgets & footer links) -->
-            <div class="right-column-container"></div>
-        </main>
-    </div>
-
-    <!-- Floating Chats Pop-up Container Slot -->
-    <div id="chats-slot"></div>
-
-    <!-- Start Community Modal Wizard Slot -->
-    <div id="community-modal-slot"></div>
-
-    <script type="module" src="./js/pages/search-page.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/react/main.jsx"></script>
 </body>
 </html>

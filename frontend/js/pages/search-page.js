@@ -1,3 +1,5 @@
+import { renderMarkup, appendMarkup } from '../../react/render.jsx';
+import { usePage } from '../../react/usePage.js';
 import { initShell, renderRightColumn } from '../shell.js';
 import { api } from '../api.js';
 import { authState } from '../auth-state.js';
@@ -9,7 +11,7 @@ import {
 
 const TABS = { posts: 'Posts', communities: 'Communities', comments: 'Comments', people: 'People' };
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initializePage() {
     await initShell();
     renderRightColumn('communities');
     const container = document.getElementById('feed-container');
@@ -17,19 +19,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const initial = TABS[getParam('type')] ? getParam('type') : 'posts';
 
     if (!q) {
-        container.innerHTML = '<div class="rc-empty-state"><h3>Search Reddit</h3><p>Type something in the search bar above and press Enter.</p></div>';
+        renderMarkup(container, '<div class="rc-empty-state"><h3>Search Reddit</h3><p>Type something in the search bar above and press Enter.</p></div>');
         return;
     }
     document.title = `${q} - Reddit Search`;
 
-    container.innerHTML = `
+    renderMarkup(container, `
         <div class="rc-search-page">
             <h1 class="rc-view-title">Results for “${escapeHtml(q)}”</h1>
             <nav class="rc-tabs" role="tablist">
                 ${Object.entries(TABS).map(([k, v]) => `<button class="rc-tab ${k === initial ? 'active' : ''}" data-tab="${k}" role="tab">${v}</button>`).join('')}
             </nav>
             <div id="searchResults"></div>
-        </div>`;
+        </div>`);
 
     container.querySelectorAll('.rc-tab').forEach(tab => {
         tab.onclick = () => {
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     });
     showTab(initial, q);
-});
+};
 
 function showTab(type, q) {
     const results = document.getElementById('searchResults');
@@ -62,7 +64,7 @@ function showTab(type, q) {
 
     let page = 0;
     const loaded = [];
-    results.innerHTML = '<div class="rc-search-list" id="searchList"></div><div class="rc-feed-status" id="searchStatus"></div>';
+    renderMarkup(results, '<div class="rc-search-list" id="searchList"></div><div class="rc-feed-status" id="searchStatus"></div>');
     const list = results.querySelector('#searchList');
     const status = results.querySelector('#searchStatus');
 
@@ -104,12 +106,12 @@ function showTab(type, q) {
     }).join('');
 
     const load = async () => {
-        status.innerHTML = '<div class="rc-spinner"></div>';
+        renderMarkup(status, '<div class="rc-spinner"></div>');
         try {
             const { results: items, hasMore } = await api.get(`/search?q=${encodeURIComponent(q)}&type=${type}&page=${page}`);
             page += 1;
             loaded.push(...items);
-            list.insertAdjacentHTML('beforeend', render(items));
+            appendMarkup(list, render(items));
             list.querySelectorAll('.btn-community-join').forEach(btn => {
                 btn.onclick = (e) => {
                     e.preventDefault();
@@ -117,14 +119,20 @@ function showTab(type, q) {
                     if (community) toggleJoin(community);
                 };
             });
-            if (!loaded.length) status.innerHTML = noResults;
+            if (!loaded.length) renderMarkup(status, noResults);
             else if (hasMore) {
-                status.innerHTML = '<button class="ui-btn ui-btn-secondary" id="searchMoreBtn">Load more</button>';
+                renderMarkup(status, '<button class="ui-btn ui-btn-secondary" id="searchMoreBtn">Load more</button>');
                 status.querySelector('#searchMoreBtn').onclick = load;
-            } else status.innerHTML = '';
+            } else renderMarkup(status, '');
         } catch (err) {
-            status.innerHTML = `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`;
+            renderMarkup(status, `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`);
         }
     };
     load();
+}
+
+
+export default function Page() {
+    usePage(initializePage);
+    return null;
 }

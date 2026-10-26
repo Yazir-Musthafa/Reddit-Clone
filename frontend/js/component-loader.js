@@ -1,26 +1,13 @@
-/**
- * Utility to asynchronously load component HTML files into target containers.
- * @param {string} selector - CSS selector of the target container
- * @param {string} path - Relative path to component .html file
- * @returns {Promise<boolean>}
- */
+import { renderMarkup } from '../react/render.jsx';
+
+// Component templates are bundled with React; no runtime HTML fetches are needed.
+const templates = import.meta.glob('../components/**/*.html', { query: '?raw', import: 'default', eager: true });
+
 export async function loadComponent(selector, path) {
     const container = document.querySelector(selector);
-    if (!container) {
-        console.warn(`Container element "${selector}" not found.`);
-        return false;
-    }
-
-    try {
-        const response = await fetch(path);
-        if (!response.ok) {
-            throw new Error(`Failed to load component from ${path} (${response.status})`);
-        }
-        const html = await response.text();
-        container.innerHTML = html;
-        return true;
-    } catch (err) {
-        console.error(`Component loader error:`, err);
-        return false;
-    }
+    if (!container) return false;
+    const key = path.replace(/^\.\//, '../');
+    if (!(key in templates)) throw new Error(`Unknown component template: ${path}`);
+    renderMarkup(container, templates[key]);
+    return true;
 }

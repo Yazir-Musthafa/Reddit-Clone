@@ -1,3 +1,4 @@
+import { removeView, renderMarkup, appendMarkup } from '../../react/render.jsx';
 import { showToast } from '../../js/interactions.js';
 import { api } from '../../js/api.js';
 import { authState } from '../../js/auth-state.js';
@@ -100,10 +101,10 @@ async function loadThreads() {
     try {
         const { conversations } = await api.get('/chats');
         if (!conversations.length) {
-            list.innerHTML = '<p class="rc-chat-empty">No conversations yet. Press + to message someone.</p>';
+            renderMarkup(list, '<p class="rc-chat-empty">No conversations yet. Press + to message someone.</p>');
             return;
         }
-        list.innerHTML = conversations.map(c => `
+        renderMarkup(list, conversations.map(c => `
             <button class="thread-item ${c.user.username === chat.active ? 'active' : ''}" data-user="${escapeHtml(c.user.username)}">
                 <span class="thread-avatar-slot">${userAvatar(c.user, 36)}</span>
                 <div class="thread-info">
@@ -111,20 +112,20 @@ async function loadThreads() {
                     <span class="thread-subtext">${c.lastMessage.fromMe ? 'You: ' : ''}${escapeHtml(c.lastMessage.text)}</span>
                 </div>
                 ${c.unread ? `<span class="rc-count-badge rc-thread-badge">${c.unread}</span>` : ''}
-            </button>`).join('');
+            </button>`).join(''));
         list.querySelectorAll('.thread-item').forEach(item => {
             item.onclick = () => selectConversation(item.dataset.user);
         });
     } catch (err) {
-        list.innerHTML = `<p class="rc-chat-empty">${escapeHtml(err.message)}</p>`;
+        renderMarkup(list, `<p class="rc-chat-empty">${escapeHtml(err.message)}</p>`);
     }
 }
 
 function renderEmptyConversation() {
     byId('activeChatUserName').textContent = 'Chats';
-    byId('activeChatAvatar').innerHTML = '';
+    renderMarkup(byId('activeChatAvatar'), '');
     byId('chatProfileHeader').classList.add('hidden');
-    byId('chatMessagesList').innerHTML = '<p class="rc-chat-empty">Pick a conversation, or press + to start a new chat.</p>';
+    renderMarkup(byId('chatMessagesList'), '<p class="rc-chat-empty">Pick a conversation, or press + to start a new chat.</p>');
     byId('chatMessageInput').disabled = true;
     document.querySelectorAll('#chatThreadsList .thread-item').forEach(t => t.classList.remove('active'));
 }
@@ -134,7 +135,7 @@ function selectConversation(username) {
     chat.other = null;
     chat.lastMessageId = null;
     document.querySelectorAll('#chatThreadsList .thread-item').forEach(t => t.classList.toggle('active', t.dataset.user === username));
-    byId('chatMessagesList').innerHTML = '<div class="rc-spinner"></div>';
+    renderMarkup(byId('chatMessagesList'), '<div class="rc-spinner"></div>');
     loadConversation(username);
 }
 
@@ -146,9 +147,9 @@ async function loadConversation(username, { quiet = false } = {}) {
         chat.other = user;
 
         byId('activeChatUserName').textContent = user.username;
-        byId('activeChatAvatar').innerHTML = userAvatar(user, 24);
+        renderMarkup(byId('activeChatAvatar'), userAvatar(user, 24));
         byId('chatProfileHeader').classList.remove('hidden');
-        byId('chatProfileAvatar').innerHTML = userAvatar(user, 56);
+        renderMarkup(byId('chatProfileAvatar'), userAvatar(user, 56));
         byId('chatProfileTitle').textContent = `u/${user.username}`;
         byId('chatProfileTitle').href = `user.html?u=${encodeURIComponent(user.username)}`;
         byId('chatProfileMeta').textContent = `Redditor since ${formatDate(user.createdAt)} • ${formatCount(user.karma)} karma`;
@@ -159,7 +160,7 @@ async function loadConversation(username, { quiet = false } = {}) {
 
         const newest = messages[messages.length - 1]?.id || null;
         if (quiet && newest === chat.lastMessageId) return;
-        byId('chatMessagesList').innerHTML = messages.length ? '' : '<p class="rc-chat-empty">Say hi 👋</p>';
+        renderMarkup(byId('chatMessagesList'), messages.length ? '' : '<p class="rc-chat-empty">Say hi 👋</p>');
         appendMessages(messages, true);
         if (!quiet) {
             input.focus();
@@ -167,7 +168,7 @@ async function loadConversation(username, { quiet = false } = {}) {
         }
     } catch (err) {
         if (quiet) return;
-        byId('chatMessagesList').innerHTML = `<p class="rc-chat-empty">${escapeHtml(err.message)}</p>`;
+        renderMarkup(byId('chatMessagesList'), `<p class="rc-chat-empty">${escapeHtml(err.message)}</p>`);
         byId('chatMessageInput').disabled = true;
         chat.active = null;
     }
@@ -175,7 +176,7 @@ async function loadConversation(username, { quiet = false } = {}) {
 
 function appendMessages(messages, scroll) {
     const list = byId('chatMessagesList');
-    list.querySelector('.rc-chat-empty')?.remove();
+    removeView(list.querySelector('.rc-chat-empty'));
     const me = authState.user;
     const other = chat.other || { username: chat.active, avatarColor: '#828F9A' };
     let lastDay = list.dataset.lastDay || '';
@@ -185,11 +186,11 @@ function appendMessages(messages, scroll) {
         const day = new Date(m.createdAt).toDateString();
         if (day !== lastDay) {
             const isToday = day === new Date().toDateString();
-            list.insertAdjacentHTML('beforeend', `<div class="chat-date-divider"><span>${isToday ? 'Today' : formatDate(m.createdAt)}</span></div>`);
+            appendMarkup(list, `<div class="chat-date-divider"><span>${isToday ? 'Today' : formatDate(m.createdAt)}</span></div>`);
             lastDay = day;
         }
         const author = m.fromMe ? me : other;
-        list.insertAdjacentHTML('beforeend', `
+        appendMarkup(list, `
             <div class="chat-message-group ${m.fromMe ? 'rc-from-me' : ''}">
                 <span class="msg-author-avatar-slot">${userAvatar(author, 28)}</span>
                 <div class="msg-content-wrapper">

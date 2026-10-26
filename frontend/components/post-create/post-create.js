@@ -1,3 +1,4 @@
+import { renderMarkup } from '../../react/render.jsx';
 import { showToast } from '../../js/interactions.js';
 import { authState } from '../../js/auth-state.js';
 import { api, uploadFile } from '../../js/api.js';
@@ -68,14 +69,14 @@ export function initPostCreate() {
     }
 
     function renderCommunityOptions(list, emptyText) {
-        communityList.innerHTML = list.length ? list.map(c => `
+        renderMarkup(communityList, list.length ? list.map(c => `
             <button class="community-option-item" data-name="${escapeHtml(c.name)}">
                 <span class="community-icon-circle no-invert" style="background:${escapeHtml(c.color)};">${escapeHtml(c.icon || c.name.charAt(0).toUpperCase())}</span>
                 <div class="community-option-info">
                     <span class="comm-title">r/${escapeHtml(c.name)}</span>
                     <span class="comm-subs">${c.memberCount !== undefined ? `${formatCount(c.memberCount)} members` : ''}</span>
                 </div>
-            </button>`).join('') : `<p class="empty-drafts-text">${emptyText}</p>`;
+            </button>`).join('') : `<p class="empty-drafts-text">${emptyText}</p>`);
         communityList.querySelectorAll('.community-option-item').forEach(btn => {
             btn.onclick = (e) => {
                 e.stopPropagation();
@@ -113,8 +114,8 @@ export function initPostCreate() {
     // ---- tags --------------------------------------------------------------------------
     function renderTags() {
         const container = byId('selectedTagsContainer');
-        container.innerHTML = state.tags.map((t, idx) => `
-            <div class="tag-badge-pill"><span>${escapeHtml(t)}</span><button class="remove-tag-btn" data-index="${idx}" aria-label="Remove tag ${escapeHtml(t)}">&times;</button></div>`).join('');
+        renderMarkup(container, state.tags.map((t, idx) => `
+            <div class="tag-badge-pill"><span>${escapeHtml(t)}</span><button class="remove-tag-btn" data-index="${idx}" aria-label="Remove tag ${escapeHtml(t)}">&times;</button></div>`).join(''));
         container.querySelectorAll('.remove-tag-btn').forEach(btn => {
             btn.onclick = (e) => {
                 e.stopPropagation();
@@ -144,11 +145,11 @@ export function initPostCreate() {
 
     // ---- media uploads --------------------------------------------------------------------
     function renderMedia() {
-        mediaGrid.innerHTML = state.media.map((m, idx) => `
+        renderMarkup(mediaGrid, state.media.map((m, idx) => `
             <div class="media-preview-card">
                 <button class="btn-remove-media" data-index="${idx}" aria-label="Remove attachment">&times;</button>
                 ${m.type === 'image' ? `<img src="${escapeHtml(m.url)}" alt="${escapeHtml(m.name || '')}">` : `<video src="${escapeHtml(m.url)}" muted></video>`}
-            </div>`).join('') + Array.from({ length: state.uploading }, () => '<div class="media-preview-card rc-uploading"><div class="rc-spinner"></div></div>').join('');
+            </div>`).join('') + Array.from({ length: state.uploading }, () => '<div class="media-preview-card rc-uploading"><div class="rc-spinner"></div></div>').join(''));
         mediaGrid.querySelectorAll('.btn-remove-media').forEach(btn => {
             btn.onclick = (e) => {
                 e.stopPropagation();
@@ -302,10 +303,10 @@ export function initPostCreate() {
     function renderDrafts() {
         const container = byId('draftsListContainer');
         if (!drafts.length) {
-            container.innerHTML = '<p class="empty-drafts-text">No saved drafts</p>';
+            renderMarkup(container, '<p class="empty-drafts-text">No saved drafts</p>');
             return;
         }
-        container.innerHTML = drafts.map(d => `
+        renderMarkup(container, drafts.map(d => `
             <div class="draft-item-card">
                 <div style="overflow:hidden;">
                     <div class="draft-item-title">${escapeHtml(d.title || 'Untitled draft')}</div>
@@ -315,7 +316,7 @@ export function initPostCreate() {
                     <button class="btn-load-draft" data-id="${d.id}">Load</button>
                     <button class="btn-delete-draft" data-id="${d.id}" aria-label="Delete draft">&times;</button>
                 </div>
-            </div>`).join('');
+            </div>`).join(''));
 
         container.querySelectorAll('.btn-load-draft').forEach(btn => {
             btn.onclick = async (e) => {

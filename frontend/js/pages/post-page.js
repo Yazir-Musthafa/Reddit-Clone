@@ -1,9 +1,13 @@
+import { removeView, renderMarkup } from '../../react/render.jsx';
+import { usePage } from '../../react/usePage.js';
 import { initShell, renderRightColumn } from '../shell.js';
 import { api } from '../api.js';
 import { authState } from '../auth-state.js';
 import { showToast, openAuthModal } from '../interactions.js';
 import { requireLogin, confirmDialog, reportDialog } from '../ui.js';
-import { createPostElement } from '../../components/post/post.js';
+import { createElement } from 'react';
+import PostCard from '../../react/PostCard.jsx';
+import { renderView } from '../../react/render.jsx';
 import { aboutCardHtml, rulesCardHtml, moderatorsCardHtml, bindSideCards } from '../community-widgets.js';
 import {
     escapeHtml, getParam, timeAgo, formatCount, userAvatar, formatCommentBody, copyToClipboard, absoluteUrl, rememberRecentPost
@@ -19,12 +23,12 @@ const ICON = {
 
 const page = { post: null, comments: [], sort: 'best' };
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initializePage() {
     await initShell();
     const container = document.getElementById('feed-container');
     const id = getParam('id');
     if (!id) {
-        container.innerHTML = '<div class="rc-empty-state"><h3>Post not found</h3><a class="ui-btn ui-btn-primary" href="index.html">Go home</a></div>';
+        renderMarkup(container, '<div class="rc-empty-state"><h3>Post not found</h3><a class="ui-btn ui-btn-primary" href="index.html">Go home</a></div>');
         renderRightColumn('communities');
         return;
     }
@@ -33,8 +37,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { post } = await api.get(`/posts/${encodeURIComponent(id)}`);
         page.post = post;
     } catch (err) {
-        container.innerHTML = `<div class="rc-empty-state"><h3>${err.status === 410 ? 'This post was deleted' : err.status === 403 ? 'This community is private' : 'Post not found'}</h3>
-            <p>${escapeHtml(err.message)}</p><a class="ui-btn ui-btn-primary" href="index.html">Go home</a></div>`;
+        renderMarkup(container, `<div class="rc-empty-state"><h3>${err.status === 410 ? 'This post was deleted' : err.status === 403 ? 'This community is private' : 'Post not found'}</h3>
+            <p>${escapeHtml(err.message)}</p><a class="ui-btn ui-btn-primary" href="index.html">Go home</a></div>`);
         renderRightColumn('communities');
         return;
     }
@@ -44,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     rememberRecentPost(post);
     renderRightSidebar(post.community.name);
 
-    container.innerHTML = `
+    renderMarkup(container, `
         <div class="rc-post-page">
             <button class="rc-back-btn" id="postBackBtn" aria-label="Go back">${ICON.back}</button>
             <div id="postSlot"></div>
@@ -62,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div id="commentTree"><div class="rc-spinner"></div></div>
             </section>
-        </div>`;
+        </div>`);
 
     document.getElementById('postBackBtn').onclick = () => {
         if (document.referrer && new URL(document.referrer).origin === window.location.origin) window.history.back();
@@ -79,12 +83,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (getParam('edit') && post.isAuthor) startEditing();
     scrollToHash();
-});
+};
 
 function renderPost() {
     const slot = document.getElementById('postSlot');
-    slot.innerHTML = '';
-    slot.appendChild(createPostElement(page.post, {
+    renderView(slot, createElement(PostCard, {
+        post: page.post,
         detail: true,
         onEdit: startEditing,
         onDeleted: () => {
@@ -112,12 +116,12 @@ function startEditing() {
     const bodyEl = card.querySelector('.rc-post-body');
     const box = document.createElement('div');
     box.className = 'rc-edit-box';
-    box.innerHTML = `
+    renderMarkup(box, `
         <div class="post-body-editor rc-edit-editor" contenteditable="true" data-placeholder="Body text (optional)">${page.post.body}</div>
         <div class="ui-dialog-actions">
             <button class="ui-btn ui-btn-secondary" data-cancel>Cancel</button>
             <button class="ui-btn ui-btn-primary" data-save>Save</button>
-        </div>`;
+        </div>`);
     if (bodyEl) bodyEl.replaceWith(box);
     else card.querySelector('.rc-post-title').after(box);
     const editor = box.querySelector('.rc-edit-editor');
@@ -176,11 +180,11 @@ function bindComposer(form, onSubmit, onCancel) {
 function renderComposer() {
     const slot = document.getElementById('commentComposerSlot');
     if (!authState.getState().isLoggedIn) {
-        slot.innerHTML = `<button class="rc-comment-login" id="commentLoginBtn">Log in to join the conversation</button>`;
+        renderMarkup(slot, `<button class="rc-comment-login" id="commentLoginBtn">Log in to join the conversation</button>`);
         slot.querySelector('#commentLoginBtn').onclick = () => openAuthModal('Log In');
         return;
     }
-    slot.innerHTML = composerHtml();
+    renderMarkup(slot, composerHtml());
     const form = slot.querySelector('form');
     const textarea = bindComposer(form, async (body) => {
         const { comment } = await api.post(`/posts/${page.post.id}/comments`, { body });
@@ -200,7 +204,7 @@ async function loadComments() {
         page.comments = comments;
         renderTree();
     } catch (err) {
-        tree.innerHTML = `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`;
+        renderMarkup(tree, `<p class="rc-muted-text">${escapeHtml(err.message)}</p>`);
     }
 }
 
@@ -270,9 +274,9 @@ function renderTree() {
     const roots = byParent.get('root') || [];
     const visible = page.comments.filter(c => !c.deleted).length;
     document.getElementById('commentCountLabel').textContent = `${visible} comment${visible === 1 ? '' : 's'}`;
-    tree.innerHTML = roots.length
+    renderMarkup(tree, roots.length
         ? roots.map(c => commentHtml(c, byParent, 0)).join('')
-        : '<div class="rc-empty-state rc-empty-small"><h3>Be the first to comment</h3><p>Nobody has responded to this post yet. Add your thoughts and get the conversation going.</p></div>';
+        : '<div class="rc-empty-state rc-empty-small"><h3>Be the first to comment</h3><p>Nobody has responded to this post yet. Add your thoughts and get the conversation going.</p></div>');
 
     const commentCountEl = document.querySelector('#postSlot .rc-comment-count');
     if (commentCountEl) commentCountEl.textContent = formatCount(page.post.commentCount);
@@ -346,7 +350,7 @@ function openReply(el, comment) {
         slot.querySelector('textarea')?.focus();
         return;
     }
-    slot.innerHTML = composerHtml({ placeholder: `Reply to ${comment.author.username}`, submitLabel: 'Reply', cancel: true });
+    renderMarkup(slot, composerHtml({ placeholder: `Reply to ${comment.author.username}`, submitLabel: 'Reply', cancel: true }));
     const form = slot.querySelector('form');
     const textarea = bindComposer(form, async (body) => {
         const { comment: created } = await api.post(`/posts/${page.post.id}/comments`, { body, parentId: comment.id });
@@ -354,7 +358,7 @@ function openReply(el, comment) {
         page.post.commentCount += 1;
         renderTree();
         showToast('Reply posted');
-    }, () => { slot.innerHTML = ''; });
+    }, () => { renderMarkup(slot, ''); });
     textarea.focus();
 }
 
@@ -364,11 +368,11 @@ function openEdit(el, comment) {
     body.classList.add('hidden');
     actions.classList.add('hidden');
     const wrapper = document.createElement('div');
-    wrapper.innerHTML = composerHtml({ value: comment.body, submitLabel: 'Save', cancel: true });
+    renderMarkup(wrapper, composerHtml({ value: comment.body, submitLabel: 'Save', cancel: true }));
     body.after(wrapper);
     const form = wrapper.querySelector('form');
     const close = () => {
-        wrapper.remove();
+        removeView(wrapper);
         body.classList.remove('hidden');
         actions.classList.remove('hidden');
     };
@@ -391,4 +395,10 @@ function scrollToHash() {
     target.scrollIntoView({ block: 'start' });
     if (hash.startsWith('#comment-')) target.classList.add('rc-highlight');
     if (hash === '#comments') document.querySelector('.rc-comment-textarea')?.focus();
+}
+
+
+export default function Page() {
+    usePage(initializePage);
+    return null;
 }

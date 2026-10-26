@@ -1,3 +1,4 @@
+import { removeView, renderMarkup } from '../react/render.jsx';
 /**
  * Reusable dialogs built on the existing .reddit-modal-* styles, plus small shared actions.
  */
@@ -15,20 +16,20 @@ export function openDialog({ title, subtitle = '', bodyHtml = '', wide = false, 
     return new Promise((resolve) => {
         const backdrop = document.createElement('div');
         backdrop.className = 'reddit-modal-backdrop ui-dialog';
-        backdrop.innerHTML = `
+        renderMarkup(backdrop, `
             <div class="reddit-modal-card ${wide ? 'ui-dialog-wide' : ''}" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}">
                 <button class="reddit-modal-close" data-close aria-label="Close">${CLOSE_ICON}</button>
                 <h2 class="reddit-modal-title">${escapeHtml(title)}</h2>
                 ${subtitle ? `<p class="reddit-modal-subtitle">${escapeHtml(subtitle)}</p>` : ''}
                 <div class="ui-dialog-body">${bodyHtml}</div>
-            </div>`;
+            </div>`);
         document.body.appendChild(backdrop);
         requestAnimationFrame(() => backdrop.classList.add('active'));
 
         const close = (value = null) => {
             backdrop.classList.remove('active');
             document.removeEventListener('keydown', onKey);
-            setTimeout(() => backdrop.remove(), 200);
+            setTimeout(() => removeView(backdrop), 200);
             resolve(value);
         };
         const onKey = (e) => { if (e.key === 'Escape') close(null); };
