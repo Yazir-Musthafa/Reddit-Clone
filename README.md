@@ -6,7 +6,7 @@ A full-stack Reddit clone. The frontend uses **React** and **Vite**, preserving 
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | React 19, JavaScript, existing HTML templates and CSS |
+| Frontend | React 19, React Router, React Context, JavaScript, existing HTML templates and CSS |
 | Frontend tooling | Vite 8, with a multi-page build and React hot reload |
 | Backend | Node.js and Express 5 |
 | Database | MongoDB through Mongoose |
@@ -112,14 +112,36 @@ Sign-up verification, one-time log in and password reset all send a 6-digit code
 
 ## React frontend architecture
 
-The migration preserves the existing `.html` URLs, query parameters, CSS, assets, API endpoints, and cookie authentication. It uses a multi-page React setup rather than introducing new routes.
+The migration preserves the existing `.html` URLs, query parameters, CSS, assets, API endpoints, and cookie authentication. It uses a multi-page React setup with React Router matching the existing page paths. Same-document query navigation uses `useNavigate`; ordinary cross-page anchors still load a document so existing page controllers and polling timers retain their lifecycle.
 
-- `frontend/react/main.jsx` starts React; `App.jsx` renders the shared layout and loads the matching page component.
+- `frontend/react/main.jsx` starts React inside `BrowserRouter` and `AuthProvider`; `App.jsx` uses `Routes`/`Route`, renders the shared layout, and lazy-loads the matching page component.
+- `AuthContext.jsx` shares the current session through `createContext`/`useContext`. Its provider uses `useSyncExternalStore` to subscribe to the existing session store. Every independently mounted view root receives a provider; community membership updates create a new session snapshot.
+- `CommentComposer.jsx` is a reusable controlled React form for comments, replies and edits. It handles validation, keyboard submission, pending state, duplicate prevention, retry and cancellation.
 - `Feed.jsx`, `PostCard.jsx`, and `Toasts.jsx` use React state for their interactive UI.
 - Other screens use template-backed React views with the existing form and interaction controllers. `render.jsx` converts HTML templates into React elements and unmounts nested views before replacement. This is a compatibility-oriented migration, not a complete rewrite of every controller into React hooks.
 - Component templates are bundled by Vite instead of fetched as HTML at runtime.
 - The rich-text editor remains an uncontrolled `contenteditable` region to preserve browser selection, paste, and toolbar behavior.
 - Backend business logic and MongoDB models remain separate from the frontend. Express serves the generated frontend from `dist/`.
+
+## Module V syllabus map
+
+| Topic | Working example |
+| --- | --- |
+| React overview and getting started | `frontend/react/main.jsx`, `App.jsx`, `vite.config.mjs`, package scripts |
+| State management | `Feed.jsx`: sorting, pagination, loading, view; `PostCard.jsx`: menus and voting |
+| Event handling | `Feed.jsx` dropdown `onClick`; `CommentComposer.jsx` `onChange`, `onSubmit`, `onKeyDown` |
+| Conditional rendering | `App.jsx` optional right column; feed loading/error/empty branches; comment Cancel button |
+| Components | `App`, `PageLayout`, `Feed`, `Dropdown`, `PostCard`, `CommentComposer`, `Toasts`, `Markup` |
+| Styling components | Existing CSS, responsive media queries, dynamic `className`, toast inline styles |
+| State in the component tree | Feed owns shared controls and passes props to cards; local card/form state; stable list keys |
+| React Context | `AuthContext.jsx`: `AuthProvider` and `useAuth`; consumed by Feed and PostCard |
+| useEffect | Feed fetching, IntersectionObserver and cleanup; composer focus; toast timers |
+| Hooks | `useState`, `useEffect`, `useContext`, `useRef`, `useMemo`, `useCallback`, `useReducer`, `useLayoutEffect`, `useSyncExternalStore`; custom `usePage` and `useAuth`; Router `useNavigate` |
+| React Router | `BrowserRouter` in `main.jsx`; `Routes`/`Route`/`useNavigate` in `App.jsx`; `navigation.js` adapts existing query navigation |
+| Forms in React | Controlled `CommentComposer`; existing uncontrolled settings and rich-text forms remain compatible |
+| Deployment and/or testing | Vite production build served by Express; Playwright interactions and screenshot comparisons |
+
+The syllabus says “Hooks in React”, not that every Hook in the React library must be used. Each Hook here has a functional role. The reducer in `PostCard` is currently a compatibility refresh counter, not a full reducer-based data model. This is still a hybrid frontend; some handlers and forms use native browser APIs. React Router does not turn all cross-page links into SPA navigation.
 
 ## Testing
 
@@ -132,9 +154,9 @@ npm run test:e2e
 
 Playwright starts a separate application server on port **3002** using the database **`reddit_clone_react_test`** on the same MongoDB instance. Test sessions and reports are ignored by Git.
 
-The migration validation passed **10 browser tests**, covering feed controls and navigation; post voting, saving, hiding and undo; post/comment editing and deletion; replies; image uploads and draft restore; profiles and preferences; community creation and mod settings; custom feeds; chats and notifications; careers navigation and validation; press inquiries; login/logout; and six-step signup.
+The Module V update passed **12 browser tests**, covering feed controls and navigation; post voting, saving, hiding and undo; post/comment editing and deletion; replies; image uploads and draft restore; profiles and preferences; community creation and mod settings; custom feeds; chats and notifications; careers navigation and validation; press inquiries; login/logout; and six-step signup. Additional checks cover Context-driven updates across post cards, comment failure/retry and duplicate prevention, keyboard submission, cancellation, and restoring feed filters with browser Back.
 
-**52 screenshot comparisons** matched the pre-migration baseline, covering all 11 page entries and selected tab, guest/member, mobile, and dark-mode states. These checks do not guarantee every function or edge case: password-reset/code-login flows, video uploads, actual resume submission, account deletion, all permission combinations, and cross-browser behavior were not fully tested.
+**52 screenshot comparisons** after the Module V update matched the pre-migration baseline, covering all 11 page entries and selected tab, guest/member, mobile, and dark-mode states. These checks do not guarantee every function or edge case: password-reset/code-login flows, video uploads, actual resume submission, account deletion, all permission combinations, and cross-browser behavior were not fully tested.
 
 Visual comparisons require local baseline screenshots and API fixtures in `.data/react-parity/`; they are **not included in a fresh clone**. Capture a baseline against the pre-migration checkout (`b9a91e9`) using the current visual runner, then compare against the React app with the same database:
 
@@ -153,7 +175,7 @@ The runner freezes the browser clock and replays captured API responses to make 
 ```text
 frontend/
   *.html            document entries preserving existing page URLs
-  react/            App, lazy page loading, Feed, PostCard, Toasts, template renderer
+  react/            Router, AuthContext, Feed, PostCard, CommentComposer, Toasts, renderer
   css/              variables, reset, layout, responsive, pages (new UI + dark mode)
   js/
     api.js            fetch wrapper for /api

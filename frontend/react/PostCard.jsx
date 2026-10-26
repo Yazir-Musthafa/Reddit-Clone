@@ -2,13 +2,14 @@ import React, { cloneElement, isValidElement, useEffect, useLayoutEffect, useRed
 import parse from 'html-react-parser';
 import { postCardHtml, compactPostHtml, postUrl } from '../components/post/post.js';
 import { api } from '../js/api.js';
-import { authState } from '../js/auth-state.js';
+import { useAuth } from './AuthContext.jsx';
 import { showToast } from '../js/interactions.js';
 import { requireLogin, toggleJoin, reportDialog, confirmDialog } from '../js/ui.js';
 import { copyToClipboard, absoluteUrl } from '../js/utils.js';
 
 /** Keyed cards keep vote, menu, carousel and hide/undo state across feed updates. */
 export default function PostCard({ post, ...options }) {
+    const { isLoggedIn } = useAuth();
     const element = useRef(null);
     const [, refresh] = useReducer(n => n + 1, 0);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -19,7 +20,6 @@ export default function PostCard({ post, ...options }) {
     const [revealed, setRevealed] = useState(false);
     const [voting, setVoting] = useState(false);
     const view = expanded ? 'card' : options.view;
-    useEffect(() => authState.subscribe(refresh), []);
     useEffect(() => {
         const close = e => { if (!element.current?.querySelector('.post-options-wrapper')?.contains(e.target)) setMenuOpen(false); };
         document.addEventListener('click', close);
@@ -44,7 +44,8 @@ export default function PostCard({ post, ...options }) {
         }
     });
     async function vote(dir) {
-        if (!requireLogin() || voting) return;
+        if (!isLoggedIn) { requireLogin(); return; }
+        if (voting) return;
         const next = post.userVote === dir ? 0 : dir;
         const previous = { score: post.score, userVote: post.userVote };
         post.score += next - post.userVote;

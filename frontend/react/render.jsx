@@ -2,6 +2,7 @@ import React, { Fragment, cloneElement, isValidElement, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import parse, { attributesToProps, domToReact } from 'html-react-parser';
+import { AuthProvider } from './AuthContext.jsx';
 
 /**
  * Template-backed React views retain the exact existing HTML (including inline
@@ -65,7 +66,7 @@ export function renderView(container, children) {
     // These existing forms deliberately reset on replacement (e.g. dialog step).
     // A fresh key preserves that behavior and avoids accumulating native handlers.
     record.children = [<Fragment key={++revision}>{children}</Fragment>];
-    flushSync(() => record.root.render(record.children));
+    flushSync(() => record.root.render(<AuthProvider>{record.children}</AuthProvider>));
 }
 
 export function renderMarkup(container, html) {
@@ -77,7 +78,7 @@ export function appendMarkup(container, html) {
     if (!roots.has(container)) renderMarkup(container, container.innerHTML);
     const record = roots.get(container);
     record.children = [...record.children, <Markup key={++revision} html={html} />];
-    flushSync(() => record.root.render(record.children));
+    flushSync(() => record.root.render(<AuthProvider>{record.children}</AuthProvider>));
 }
 
 export function removeView(node) {

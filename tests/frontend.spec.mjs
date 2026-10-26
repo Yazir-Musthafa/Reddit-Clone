@@ -34,8 +34,74 @@ test('feed sort, time, card/compact view, navigation and history', async ({ page
     await expect(page.locator('.explore-page-title')).toBeVisible();
     await page.goBack();
     await expect(page.locator('#feedSortBtn')).toBeVisible();
+    await expect(page.locator('#currentSortLabel')).toHaveText('Top');
+    await expect(page.locator('#currentTimeLabel')).toHaveText('All Time');
     await page.locator('#sidebarAuthedDrawer [data-nav="news"]').click();
     await expect(page.locator('.news-feed-view')).toBeVisible();
+});
+
+test('controlled comment form preserves errors, blocks duplicates and submits with the keyboard', async ({ page, request }) => {
+    const post = await createPost(request);
+    await goto(page, `/post.html?id=${post.id}`);
+    const form = page.locator('#commentComposerSlot form');
+    const textarea = form.locator('textarea');
+    const submit = form.locator('[type="submit"]');
+    await textarea.fill('   ');
+    await expect(submit).toBeDisabled();
+    let requests = 0;
+    let release;
+    const pending = new Promise(resolve => { release = resolve; });
+    await page.route(`**/api/posts/${post.id}/comments`, async route => {
+        if (route.request().method() !== 'POST') return route.continue();
+        requests++;
+        if (requests === 1) return route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'Please retry this comment' }) });
+        await pending;
+        await route.continue();
+    });
+    await textarea.fill('A controlled comment survives failure');
+    await submit.click();
+    await expect(page.locator('.toast-msg', { hasText: 'Please retry this comment' })).toBeVisible();
+    await expect(textarea).toHaveValue('A controlled comment survives failure');
+    await expect(submit).toBeEnabled();
+    await textarea.press('Control+Enter');
+    await expect(submit).toBeDisabled();
+    await textarea.press('Control+Enter');
+    expect(requests).toBe(2);
+    release();
+    await expect(textarea).toHaveValue('');
+    await expect(submit).toBeDisabled();
+    await expect(page.locator('.rc-comment-body', { hasText: 'A controlled comment survives failure' })).toHaveCount(1);
+    const comment = page.locator('.rc-comment').first();
+    await comment.locator('[data-action="reply"]').first().click();
+    await comment.locator('.rc-reply-slot textarea').fill('Cancelled reply');
+    await comment.locator('.rc-reply-slot [data-cancel]').click();
+    await expect(comment.locator('.rc-reply-slot textarea')).toHaveCount(0);
+    await comment.locator('[data-action="edit"]').first().click();
+    await expect(comment.locator('.rc-comment-composer textarea')).toHaveValue('A controlled comment survives failure');
+    await comment.locator('.rc-comment-composer textarea').fill('Cancelled edit');
+    await comment.locator('.rc-comment-composer [data-cancel]').click();
+    await expect(comment.locator('.rc-comment-body').first()).toHaveText('A controlled comment survives failure');
+});
+
+test('session Context refreshes membership in every rendered post card without reloading', async ({ page, request }) => {
+    const session = await (await request.get('/api/auth/me')).json();
+    if (session.user.joinedCommunities.some(c => c.name === 'funny')) await request.post('/api/communities/funny/join');
+    const first = await createPost(request);
+    const second = await createPost(request);
+    try {
+        await goto(page, '/index.html?view=all&sort=new');
+        await page.evaluate(() => { window.contextTestDocument = 'same document'; });
+        const cards = [first, second].map(post => page.locator(`[data-post-id="${post.id}"]`));
+        for (const card of cards) await expect(card.locator('[data-action="join"]')).toBeVisible();
+        await cards[0].locator('[data-action="join"]').click();
+        for (const card of cards) await expect(card.locator('[data-action="join"]')).toHaveCount(0);
+        expect(await page.evaluate(() => window.contextTestDocument)).toBe('same document');
+    } finally {
+        const updated = await (await request.get('/api/auth/me')).json();
+        const wasJoined = session.user.joinedCommunities.some(c => c.name === 'funny');
+        const isJoined = updated.user.joinedCommunities.some(c => c.name === 'funny');
+        if (wasJoined !== isJoined) await request.post('/api/communities/funny/join');
+    }
 });
 
 test('post voting, saving, hiding and undo', async ({ page, request }) => {

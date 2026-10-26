@@ -1,3 +1,4 @@
+import { navigateQuery } from '../../react/navigation.js';
 import { renderMarkup, appendMarkup } from '../../react/render.jsx';
 import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
@@ -32,7 +33,7 @@ function route() {
 }
 
 function navigate(url) {
-    window.history.pushState({}, '', url);
+    navigateQuery(url);
     container().scrollTop = 0;
     route();
 }

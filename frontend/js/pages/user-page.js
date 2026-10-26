@@ -1,3 +1,4 @@
+import { navigateQuery } from '../../react/navigation.js';
 import { renderMarkup, appendMarkup } from '../../react/render.jsx';
 import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
@@ -74,7 +75,7 @@ async function initializePage() {
             url.searchParams.set('tab', tab.dataset.tab);
             url.searchParams.delete('sort');
             url.searchParams.delete('t');
-            window.history.replaceState({}, '', url);
+            navigateQuery(url, { replace: true });
             showTab(tab.dataset.tab);
         };
     });

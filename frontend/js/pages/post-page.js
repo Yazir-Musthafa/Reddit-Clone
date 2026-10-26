@@ -7,6 +7,7 @@ import { showToast, openAuthModal } from '../interactions.js';
 import { requireLogin, confirmDialog, reportDialog } from '../ui.js';
 import { createElement } from 'react';
 import PostCard from '../../react/PostCard.jsx';
+import CommentComposer from '../../react/CommentComposer.jsx';
 import { renderView } from '../../react/render.jsx';
 import { aboutCardHtml, rulesCardHtml, moderatorsCardHtml, bindSideCards } from '../community-widgets.js';
 import {
@@ -142,41 +143,6 @@ function startEditing() {
 
 // ---- Comments -----------------------------------------------------------------------------
 
-function composerHtml({ placeholder = 'Join the conversation', submitLabel = 'Comment', value = '', cancel = false } = {}) {
-    return `
-        <form class="rc-comment-composer">
-            <textarea class="rc-comment-textarea" placeholder="${escapeHtml(placeholder)}" maxlength="10000" rows="3">${escapeHtml(value)}</textarea>
-            <div class="rc-composer-actions">
-                <span class="rc-muted-text rc-composer-hint">Ctrl + Enter to submit</span>
-                ${cancel ? '<button type="button" class="ui-btn ui-btn-secondary" data-cancel>Cancel</button>' : ''}
-                <button type="submit" class="ui-btn ui-btn-primary" disabled>${submitLabel}</button>
-            </div>
-        </form>`;
-}
-
-function bindComposer(form, onSubmit, onCancel) {
-    const textarea = form.querySelector('textarea');
-    const submit = form.querySelector('[type=submit]');
-    textarea.addEventListener('input', () => { submit.disabled = !textarea.value.trim(); });
-    textarea.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) form.requestSubmit();
-    });
-    form.querySelector('[data-cancel]')?.addEventListener('click', onCancel);
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        const body = textarea.value.trim();
-        if (!body) return;
-        submit.disabled = true;
-        try {
-            await onSubmit(body);
-        } catch (err) {
-            showToast(err.message);
-            submit.disabled = false;
-        }
-    };
-    return textarea;
-}
-
 function renderComposer() {
     const slot = document.getElementById('commentComposerSlot');
     if (!authState.getState().isLoggedIn) {
@@ -184,17 +150,16 @@ function renderComposer() {
         slot.querySelector('#commentLoginBtn').onclick = () => openAuthModal('Log In');
         return;
     }
-    renderMarkup(slot, composerHtml());
-    const form = slot.querySelector('form');
-    const textarea = bindComposer(form, async (body) => {
-        const { comment } = await api.post(`/posts/${page.post.id}/comments`, { body });
-        textarea.value = '';
-        form.querySelector('[type=submit]').disabled = true;
-        page.comments.unshift(comment);
-        page.post.commentCount += 1;
-        renderTree();
-        showToast('Comment posted');
-    });
+    renderView(slot, createElement(CommentComposer, {
+        resetOnSuccess: true,
+        onSubmit: async body => {
+            const { comment } = await api.post(`/posts/${page.post.id}/comments`, { body });
+            page.comments.unshift(comment);
+            page.post.commentCount += 1;
+            renderTree();
+            showToast('Comment posted');
+        }
+    }));
 }
 
 async function loadComments() {
@@ -350,16 +315,17 @@ function openReply(el, comment) {
         slot.querySelector('textarea')?.focus();
         return;
     }
-    renderMarkup(slot, composerHtml({ placeholder: `Reply to ${comment.author.username}`, submitLabel: 'Reply', cancel: true }));
-    const form = slot.querySelector('form');
-    const textarea = bindComposer(form, async (body) => {
-        const { comment: created } = await api.post(`/posts/${page.post.id}/comments`, { body, parentId: comment.id });
-        page.comments.push(created);
-        page.post.commentCount += 1;
-        renderTree();
-        showToast('Reply posted');
-    }, () => { renderMarkup(slot, ''); });
-    textarea.focus();
+    renderView(slot, createElement(CommentComposer, {
+        placeholder: `Reply to ${comment.author.username}`, submitLabel: 'Reply', autoFocus: true,
+        onCancel: () => renderMarkup(slot, ''),
+        onSubmit: async body => {
+            const { comment: created } = await api.post(`/posts/${page.post.id}/comments`, { body, parentId: comment.id });
+            page.comments.push(created);
+            page.post.commentCount += 1;
+            renderTree();
+            showToast('Reply posted');
+        }
+    }));
 }
 
 function openEdit(el, comment) {
@@ -368,23 +334,21 @@ function openEdit(el, comment) {
     body.classList.add('hidden');
     actions.classList.add('hidden');
     const wrapper = document.createElement('div');
-    renderMarkup(wrapper, composerHtml({ value: comment.body, submitLabel: 'Save', cancel: true }));
     body.after(wrapper);
-    const form = wrapper.querySelector('form');
     const close = () => {
         removeView(wrapper);
         body.classList.remove('hidden');
         actions.classList.remove('hidden');
     };
-    const textarea = bindComposer(form, async (value) => {
-        const { comment: updated } = await api.patch(`/comments/${comment.id}`, { body: value });
-        Object.assign(comment, { body: updated.body, edited: updated.edited });
-        renderTree();
-        showToast('Comment updated');
-    }, close);
-    form.querySelector('[type=submit]').disabled = false;
-    textarea.focus();
-    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+    renderView(wrapper, createElement(CommentComposer, {
+        initialValue: comment.body, submitLabel: 'Save', autoFocus: true, onCancel: close,
+        onSubmit: async value => {
+            const { comment: updated } = await api.patch(`/comments/${comment.id}`, { body: value });
+            Object.assign(comment, { body: updated.body, edited: updated.edited });
+            renderTree();
+            showToast('Comment updated');
+        }
+    }));
 }
 
 function scrollToHash() {

@@ -1,3 +1,4 @@
+import { navigateQuery } from '../../react/navigation.js';
 import { renderMarkup } from '../../react/render.jsx';
 import { usePage } from '../../react/usePage.js';
 import { initShell } from '../shell.js';
@@ -32,7 +33,7 @@ async function initializePage() {
     container.querySelectorAll('.rc-tab').forEach(tab => {
         tab.onclick = () => {
             container.querySelectorAll('.rc-tab').forEach(t => t.classList.toggle('active', t === tab));
-            window.history.replaceState({}, '', `settings.html?tab=${tab.dataset.tab}`);
+            navigateQuery(`settings.html?tab=${tab.dataset.tab}`, { replace: true });
             renderTab(tab.dataset.tab);
         };
     });

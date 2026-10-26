@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '../js/api.js';
-import { authState } from '../js/auth-state.js';
+import { useAuth } from './AuthContext.jsx';
+import { navigateQuery } from './navigation.js';
 import { readLocal, writeLocal } from '../js/utils.js';
 import { Markup, renderView } from './render.jsx';
 import PostCard from './PostCard.jsx';
@@ -27,10 +28,11 @@ function Dropdown({ id, buttonClass, label, header, open, toggle, children }) {
 
 export default function Feed({ endpoint, resultsKey = 'posts', sorts = SORTS, defaultSort = 'best', showCommunity = true, showSort = true,
     emptyHtml = '<div class="rc-empty-state"><h3>No posts yet</h3><p>Check back later.</p></div>', headerHtml = '', className = '', controls }) {
+    const { user } = useAuth();
     const params = new URLSearchParams(window.location.search);
     const [sort, setSort] = useState(() => sorts.includes(params.get('sort')) ? params.get('sort') : defaultSort);
     const [time, setTime] = useState(() => TIME_LABELS[params.get('t')] ? params.get('t') : 'day');
-    const [view, setView] = useState(() => readLocal('rc_view', null) || authState.user?.prefs?.defaultView || 'card');
+    const [view, setView] = useState(() => readLocal('rc_view', null) || user?.prefs?.defaultView || 'card');
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -82,7 +84,7 @@ export default function Feed({ endpoint, resultsKey = 'posts', sorts = SORTS, de
         const url = new URL(window.location.href);
         url.searchParams.set('sort', nextSort);
         if (nextSort === 'top') url.searchParams.set('t', nextTime); else url.searchParams.delete('t');
-        window.history.replaceState({}, '', url);
+        navigateQuery(url, { replace: true });
     }
     const dropdown = (id, props, children) => <Dropdown id={id} {...props} open={menu === id} toggle={() => setMenu(menu === id ? null : id)}>{children}</Dropdown>;
     return <div className={`feed-container ${className}`}>

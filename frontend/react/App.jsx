@@ -1,5 +1,7 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useLayoutEffect } from 'react';
+import { Route, Routes, useNavigate } from 'react-router';
 import Toasts from './Toasts.jsx';
+import { registerNavigation } from './navigation.js';
 
 const pages = {
     'index.html': lazy(() => import('../js/app.js')),
@@ -17,8 +19,16 @@ const pages = {
 const withRightColumn = new Set(['index.html', 'post.html', 'search.html', 'submit.html']);
 
 export default function App() {
-    const filename = window.location.pathname.split('/').pop() || 'index.html';
-    const Page = pages[filename] || pages['page.html'];
+    const navigate = useNavigate();
+    useLayoutEffect(() => registerNavigation(navigate), [navigate]);
+    return <Routes>
+        <Route path="/" element={<PageLayout filename="index.html" Page={pages['index.html']} />} />
+        {Object.entries(pages).map(([filename, Page]) => <Route key={filename} path={`/${filename}`} element={<PageLayout filename={filename} Page={Page} />} />)}
+        <Route path="*" element={<PageLayout filename="page.html" Page={pages['page.html']} />} />
+    </Routes>;
+}
+
+function PageLayout({ filename, Page }) {
     const right = withRightColumn.has(filename);
     return <>
         <div id="app">

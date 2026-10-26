@@ -60,10 +60,10 @@ class AuthStateManager {
     markJoined(community, joined) {
         const user = this.state.user;
         if (!user) return;
-        user.joinedCommunities = user.joinedCommunities.filter(c => c.name.toLowerCase() !== community.name.toLowerCase());
-        if (joined) user.joinedCommunities.push({ id: community.id, name: community.name, icon: community.icon, color: community.color });
-        user.joinedCommunities.sort((a, b) => a.name.localeCompare(b.name));
-        this.notify();
+        const joinedCommunities = user.joinedCommunities.filter(c => c.name.toLowerCase() !== community.name.toLowerCase());
+        if (joined) joinedCommunities.push({ id: community.id, name: community.name, icon: community.icon, color: community.color });
+        joinedCommunities.sort((a, b) => a.name.localeCompare(b.name));
+        this.setUser({ ...user, joinedCommunities });
     }
 
     subscribe(listener) {

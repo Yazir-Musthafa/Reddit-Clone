@@ -1,3 +1,4 @@
+import { navigateQuery } from '../react/navigation.js';
 import { renderMarkup } from '../react/render.jsx';
 /**
  * Home page views: Home, Popular, News, All, Explore and custom feeds, switched in place.
@@ -57,7 +58,7 @@ export async function switchView(viewName, extra = {}, { replace = false } = {})
     if (extra.sort) url.searchParams.set('sort', extra.sort);
     if (extra.t) url.searchParams.set('t', extra.t);
     if (url.toString() !== window.location.href) {
-        window.history[replace ? 'replaceState' : 'pushState']({ view }, '', url);
+        navigateQuery(url, { replace });
     }
 
     setActiveNav(view, extra.feed || '');
@@ -126,5 +127,5 @@ export async function switchView(viewName, extra = {}, { replace = false } = {})
 
 window.addEventListener('popstate', () => {
     const params = new URLSearchParams(window.location.search);
-    switchView(params.get('view') || 'home', { feed: params.get('feed') }, { replace: true });
+    switchView(params.get('view') || 'home', { feed: params.get('feed'), sort: params.get('sort'), t: params.get('t') }, { replace: true });
 });
