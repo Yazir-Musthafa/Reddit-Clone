@@ -101,7 +101,7 @@ export default function Feed({ endpoint, resultsKey = 'posts', sorts = SORTS, de
                 </button>))}
         </div></div>
         <div className={`posts-feed ${view === 'compact' ? 'compact-view-active' : ''}`} id="postsFeedList">
-            {posts.map(post => <PostCard key={`${view}:${post.id}`} post={post} view={view} showCommunity={showCommunity} />)}
+            {posts.map(post => <PostCard key={`${view}:${post.id}`} post={post} view={view} showCommunity={showCommunity} onChange={changes => setPosts(current => current.map(item => item.id === post.id ? { ...item, ...changes } : item))} />)}
         </div>
         <div className="rc-feed-status" id="feedStatus">
             {loading ? <div className="rc-spinner" aria-label="Loading" /> : error ? <div className="rc-empty-state"><p>{error}</p><button className="ui-btn ui-btn-secondary" id="feedRetryBtn" onClick={loadMore}>Try again</button></div>

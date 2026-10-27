@@ -84,7 +84,8 @@ This builds once, starts Express with Node's file watcher, and starts Vite. Open
 | `npm run dev:frontend` | Start the Vite frontend on port 5173; requires the backend |
 | `npm run dev` | Start frontend and backend together for development |
 | `npm run build` | Generate `dist/` without starting a server |
-| `npm run test:e2e` | Run browser interaction tests |
+| `npm run test:unit` | Check immutable post state and form validation |
+| `npm run test:e2e` | Run browser interaction and responsive tests |
 | `npm run test:visual` | Compare screenshots against a local baseline |
 | `npm run seed` | **Delete and re-seed the configured database** |
 
@@ -117,7 +118,9 @@ The migration preserves the existing `.html` URLs, query parameters, CSS, assets
 - `frontend/react/main.jsx` starts React inside `BrowserRouter` and `AuthProvider`; `App.jsx` uses `Routes`/`Route`, renders the shared layout, and lazy-loads the matching page component.
 - `AuthContext.jsx` shares the current session through `createContext`/`useContext`. Its provider uses `useSyncExternalStore` to subscribe to the existing session store. Every independently mounted view root receives a provider; community membership updates create a new session snapshot.
 - `CommentComposer.jsx` is a reusable controlled React form for comments, replies and edits. It handles validation, keyboard submission, pending state, duplicate prevention, retry and cancellation.
-- `Feed.jsx`, `PostCard.jsx`, and `Toasts.jsx` use React state for their interactive UI.
+- `PostContent.jsx` supplies reusable JSX components for full/compact cards: `VoteControls`, `JoinButton`, `PostMenu`, `PostMedia`, `CardContent` and `CompactContent`. `PostCard.jsx` uses the pure `postReducer` for immutable voting/data updates and reports changes to the parent feed.
+- `SettingsPage.jsx` uses `useSearchParams` for tabs and a portal to preserve Router/Auth Context. Account, profile and preferences are React components; text, password, email, color, checkbox and select inputs are controlled. `FormSection`, `FormField` and `useForm` share validation and submission behavior.
+- `Feed.jsx` and `Toasts.jsx` use React state for their interactive UI.
 - Other screens use template-backed React views with the existing form and interaction controllers. `render.jsx` converts HTML templates into React elements and unmounts nested views before replacement. This is a compatibility-oriented migration, not a complete rewrite of every controller into React hooks.
 - Component templates are bundled by Vite instead of fetched as HTML at runtime.
 - The rich-text editor remains an uncontrolled `contenteditable` region to preserve browser selection, paste, and toolbar behavior.
@@ -130,18 +133,42 @@ The migration preserves the existing `.html` URLs, query parameters, CSS, assets
 | React overview and getting started | `frontend/react/main.jsx`, `App.jsx`, `vite.config.mjs`, package scripts |
 | State management | `Feed.jsx`: sorting, pagination, loading, view; `PostCard.jsx`: menus and voting |
 | Event handling | `Feed.jsx` dropdown `onClick`; `CommentComposer.jsx` `onChange`, `onSubmit`, `onKeyDown` |
-| Conditional rendering | `App.jsx` optional right column; feed loading/error/empty branches; comment Cancel button |
-| Components | `App`, `PageLayout`, `Feed`, `Dropdown`, `PostCard`, `CommentComposer`, `Toasts`, `Markup` |
+| Conditional rendering | `App.jsx` optional right column; feed loading/error/empty branches; comment Cancel button; conditional post menu/Join controls |
+| Components | `App`, `PageLayout`, `Feed`, `Dropdown`, `PostCard`, `VoteControls`, `PostMenu`, `FormSection`, `FormField`, `CommentComposer`, `Toasts`, `Markup` |
 | Styling components | Existing CSS, responsive media queries, dynamic `className`, toast inline styles |
 | State in the component tree | Feed owns shared controls and passes props to cards; local card/form state; stable list keys |
 | React Context | `AuthContext.jsx`: `AuthProvider` and `useAuth`; consumed by Feed and PostCard |
 | useEffect | Feed fetching, IntersectionObserver and cleanup; composer focus; toast timers |
-| Hooks | `useState`, `useEffect`, `useContext`, `useRef`, `useMemo`, `useCallback`, `useReducer`, `useLayoutEffect`, `useSyncExternalStore`; custom `usePage` and `useAuth`; Router `useNavigate` |
-| React Router | `BrowserRouter` in `main.jsx`; `Routes`/`Route`/`useNavigate` in `App.jsx`; `navigation.js` adapts existing query navigation |
-| Forms in React | Controlled `CommentComposer`; existing uncontrolled settings and rich-text forms remain compatible |
+| Hooks | `useState`, `useEffect`, `useContext`, `useRef`, `useMemo`, `useCallback`, `useReducer`, `useLayoutEffect`, `useSyncExternalStore`; custom `usePage`, `useAuth` and `useForm`; Router `useNavigate` and `useSearchParams` |
+| React Router | `BrowserRouter` in `main.jsx`; `Routes`/`Route`/`useNavigate` in `App.jsx`; `navigation.js` adapts existing query navigation; settings tabs use `useSearchParams` with Back/Forward support |
+| Forms in React | Controlled comment, account, profile and preference forms; client validation and server errors; the rich-text editor remains uncontrolled |
 | Deployment and/or testing | Vite production build served by Express; Playwright interactions and screenshot comparisons |
 
-The syllabus says “Hooks in React”, not that every Hook in the React library must be used. Each Hook here has a functional role. The reducer in `PostCard` is currently a compatibility refresh counter, not a full reducer-based data model. This is still a hybrid frontend; some handlers and forms use native browser APIs. React Router does not turn all cross-page links into SPA navigation.
+The syllabus says “Hooks in React”, not that every Hook in the React library must be used. Each Hook here has a functional role. The pure `postReducer` now calculates vote changes and merges post patches without mutating input props; the old refresh counter and HTML-string card templates have been removed. This is still a hybrid frontend; some handlers and forms use native browser APIs. React Router does not turn all cross-page links into SPA navigation.
+
+## Final evaluation rubric (20 marks)
+
+The implementation is mapped to the five supplied criteria. These are evidence for an evaluator, not a guaranteed mark; individual understanding must be demonstrated by the student.
+
+| Criterion (4 marks each) | Implementation and evidence |
+| --- | --- |
+| Component design and rendering | Reusable JSX post components and settings fields/forms; props and callback props; keyed lists; conditional login, menu, media, pending and empty/error UI |
+| UI styling and responsiveness | Existing CSS and design preserved; dynamic profile colors and selected classes; inline toast styles; mobile single-column layout including collapsed/full-width variants; wrapping editor toolbar; tablet press-asset grid; 33 page/viewport checks |
+| Hooks and state management | Immutable `postReducer`, functional feed updates, local UI state, Auth Context, Effects with cleanup, controlled values, optimistic rollback and immediate duplicate guards |
+| Routing and forms | React Router page matching, query navigation, `useSearchParams` settings tabs with Back/Forward/reload; reusable controlled fields; email/required/minimum-length/matching-password validation; pending/success/server-error handling |
+| Individual understanding and demonstration | The PDF explains exact source lines, feature traces, debugging exercises, a timed demo and an honest contribution worksheet. Practice these independently; assistance does not establish personal understanding or authorship. |
+
+The responsive checks found and fixed three existing problems: full-width mobile pages could retain a desktop grid, the editor toolbar overflowed on narrow screens, and press assets overflowed at tablet width. Persisted collapsed-sidebar layouts are also covered. Desktop screenshots and the existing mobile home states retain their baseline appearance.
+
+### Rubric demonstration
+
+1. Show `PostContent.jsx`: explain props, reusable voting/menu components and conditional rendering.
+2. Show `postState.mjs`: predict neutral/up/down vote transitions and explain rollback without mutating props.
+3. Open settings Profile: change avatar/banner colors and save. Explain controlled state and inline styles.
+4. Switch settings tabs, use Back/Forward and reload. Explain `useSearchParams` and Context-preserving portals.
+5. Submit an invalid email/mismatched password, correct it, and explain how `useForm` prevents invalid/duplicate requests and displays server errors.
+6. Resize community, submit and press pages to mobile/tablet. Explain the CSS fixes rather than hiding overflow.
+7. Run the unit/browser tests and describe what is covered and what is still untested. Attribute your own contribution accurately.
 
 ## Testing
 
@@ -149,14 +176,15 @@ With MongoDB running, install the test browser once and run the interaction suit
 
 ```bash
 npx playwright install chromium
+npm run test:unit
 npm run test:e2e
 ```
 
 Playwright starts a separate application server on port **3002** using the database **`reddit_clone_react_test`** on the same MongoDB instance. Test sessions and reports are ignored by Git.
 
-The Module V update passed **12 browser tests**, covering feed controls and navigation; post voting, saving, hiding and undo; post/comment editing and deletion; replies; image uploads and draft restore; profiles and preferences; community creation and mod settings; custom feeds; chats and notifications; careers navigation and validation; press inquiries; login/logout; and six-step signup. Additional checks cover Context-driven updates across post cards, comment failure/retry and duplicate prevention, keyboard submission, cancellation, and restoring feed filters with browser Back.
+The rubric update passed **20 browser tests** and **4 unit tests**, covering feed controls and navigation; post voting, saving, hiding and undo; post/comment editing and deletion; replies; image uploads and draft restore; profiles and preferences; community creation and mod settings; custom feeds; chats and notifications; careers navigation and validation; press inquiries; login/logout; and six-step signup. Additional checks cover Context-driven updates across post cards, comment failure/retry and duplicate prevention, keyboard submission, cancellation, and restoring feed filters with browser Back. Rubric checks also cover account validation and request failure/retry, settings Back/Forward/reload, live profile colors, preference rollback, post-vote rollback, saved state across card/compact changes, all 11 page entries at 390/768/1440px, and persisted collapsed-sidebar layouts. Account email success/error responses in that validation test are mocked; it does not change the demo account email.
 
-**52 screenshot comparisons** after the Module V update matched the pre-migration baseline, covering all 11 page entries and selected tab, guest/member, mobile, and dark-mode states. These checks do not guarantee every function or edge case: password-reset/code-login flows, video uploads, actual resume submission, account deletion, all permission combinations, and cross-browser behavior were not fully tested.
+**52 screenshot comparisons** after the rubric update matched the pre-migration baseline, covering all 11 page entries and selected tab, guest/member, mobile, and dark-mode states. These checks do not guarantee every function or edge case: password-reset/code-login flows, video uploads, actual resume submission, account deletion, all permission combinations, and cross-browser behavior were not fully tested.
 
 Visual comparisons require local baseline screenshots and API fixtures in `.data/react-parity/`; they are **not included in a fresh clone**. Capture a baseline against the pre-migration checkout (`b9a91e9`) using the current visual runner, then compare against the React app with the same database:
 
@@ -175,7 +203,7 @@ The runner freezes the browser clock and replays captured API responses to make 
 ```text
 frontend/
   *.html            document entries preserving existing page URLs
-  react/            Router, AuthContext, Feed, PostCard, CommentComposer, Toasts, renderer
+  react/            Router, AuthContext, Feed, PostCard/PostContent, SettingsPage, forms, Toasts
   css/              variables, reset, layout, responsive, pages (new UI + dark mode)
   js/
     api.js            fetch wrapper for /api

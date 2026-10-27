@@ -91,6 +91,7 @@ function renderPost() {
     renderView(slot, createElement(PostCard, {
         post: page.post,
         detail: true,
+        onChange: changes => { page.post = { ...page.post, ...changes }; },
         onEdit: startEditing,
         onDeleted: () => {
             showToast('Post deleted');

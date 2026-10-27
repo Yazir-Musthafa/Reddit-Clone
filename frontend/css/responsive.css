@@ -18,12 +18,19 @@
     .right-column-container {
         display: none !important;
     }
+
+    .main-layout.sidebar-collapsed {
+        grid-template-columns: 48px minmax(0, 1fr);
+    }
 }
 
 /* Mobile (< 768px): Hide Left Sidebar & Right Sidebar, 1 Column Feed Only */
 @media (max-width: 767px) {
-    .main-layout {
-        grid-template-columns: 1fr;
+    .main-layout,
+    .main-layout.sidebar-collapsed,
+    .main-layout.no-right-col,
+    .main-layout.no-right-col.sidebar-collapsed {
+        grid-template-columns: minmax(0, 1fr);
         padding: var(--space-md) var(--space-sm);
         gap: 0;
     }
